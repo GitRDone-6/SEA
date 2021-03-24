@@ -62,7 +62,7 @@ class IPRange:
             elif self._list[index][0] <= lower and upper > self._list[index][1]:
                 ranges_to_delete = []
                 for i in range(index, len(self._list)):
-                    if
+
 
 
 
