@@ -760,6 +760,9 @@
            <layout class="QGridLayout" name="gridLayout_7">
             <item row="0" column="0">
              <widget class="QSplitter" name="splitter_9">
+              <property name="frameShape">
+               <enum>QFrame::WinPanel</enum>
+              </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -863,14 +866,19 @@
                   <item>
                    <widget class="QPushButton" name="pushbutton_add_tool">
                     <property name="text">
-                     <string>Add Tool</string>
+                     <string>+</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QPushButton" name="pushbutton_delete_tool">
+                    <property name="font">
+                     <font>
+                      <pointsize>13</pointsize>
+                     </font>
+                    </property>
                     <property name="text">
-                     <string>Delete Tool</string>
+                     <string>-</string>
                     </property>
                    </widget>
                   </item>
@@ -887,6 +895,19 @@
                      <string>ᐯ</string>
                     </property>
                    </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                  </layout>
                 </item>
@@ -1005,6 +1026,13 @@
                      </item>
                     </layout>
                    </widget>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton">
+                   <property name="text">
+                    <string>Export as Tool Specification File...</string>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -1204,7 +1232,13 @@
     <addaction name="separator"/>
     <addaction name="actionTool"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+   </widget>
    <addaction name="menuSEA_Menu"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionTool">
