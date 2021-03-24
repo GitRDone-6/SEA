@@ -13,9 +13,14 @@ class IPRange:
     For the projects sake, we'll still construct our own data structure 3/23/21
     """
 
-    def __init__(self):
-        self._list = []
-        pass
+    def __init__(self, lower: str, upper: str):
+        self._check_valid_range(lower, upper)
+        self._list = [(lower, upper)]
+
+    @staticmethod
+    def _check_valid_range(lower: str, upper: str) -> None:
+        if lower > upper:
+            raise ValueError('lower is greater than upper')
 
     def insert(self, lower: str, upper: str) -> None:
         """
@@ -41,23 +46,28 @@ class IPRange:
             
             Case    3) The range given is partially inclusive of 1 IP Tuple
             Given   3) ("126.0.0.1", 127.0.0.99")
-            Answer  3) Extend the tuple to the outling bound.
+            Answer  3) Extend the tuple to the outlying bound.
             Return  3) [("126.0.0.1", "128.0.0.1"), ("129.0.0.1"), ("201.0.0.1", 204.0.0.1")]
             
         We also need to check if a tuple goes over any other tuple.
         
         '''
-        if lower > upper:
-            raise ValueError('Lower is greater than upper')
+        self._check_valid_range(lower, upper)
         singular_range = lower is upper
-        if not self._list:
-            self._list.append((lower, upper))
-        else:
-            for ip_range in self._list:
-                if singular_range:
+        new_range = IPRange(lower, upper)
+        exclusive, index = self.is_mutually_exclusive(new_range)
+        if not exclusive:
+            if self._list[index][1] >= upper and lower < self._list[index][0]:
+                self._list[index][0] = lower
+            elif self._list[index][0] <= lower and upper > self._list[index][1]:
+                ranges_to_delete = []
+                for i in range(index, len(self._list)):
+                    if
 
 
-    def is_mutually_exclusive(self, other: 'IPRange') -> bool:
+
+
+    def is_mutually_exclusive(self, other: 'IPRange') -> (bool, int):
         """
         Checks if the IP is mutually exclusive.
         :param other:
@@ -65,29 +75,36 @@ class IPRange:
         """
         '''
         There's only two cases: 
-            1) Other's lower bound is greather than This lower bound -> False
+            1) Other's lower bound is greater than This lower bound -> False
             2) Other's upper bound is less than This upper bound -> False
             
-        Check each tuple in each ip range if they are inside each other. If they are singular then there are special case
+        Check each tuple in each ip range if they are inside each other. If they are singular then there are special 
+        case
+        
+        TODO: This implementation can be improved. This .index method traverses the list a second time. Please update 
+        this
         '''
-        for this_ip_range in self.get_list():
-            for other_ip_range in other.get_list():
+
+        this_list = self.get_list()
+        other_list = other.get_list()
+        for this_ip_range in this_list:
+            for other_ip_range in other_list:
                 if len(this_ip_range) is 1 and len(other_ip_range) is 1:
                     if this_ip_range[0] is other_ip_range[0]:
-                        return False
+                        return False, this_list.index(this_ip_range)
                 elif len(this_ip_range) is 1 and len(other_ip_range) is not 1:
                     if other_ip_range[0] <= this_ip_range[0] < other_ip_range[1]:
-                        return False
+                        return False, this_list.index(this_ip_range)
                 elif len(this_ip_range) is not 1 and len(other_ip_range) is 1:
                     if this_ip_range[0] <= other_ip_range[0] < this_ip_range[1]:
-                        return False
+                        return False, this_list.index(this_ip_range)
                 else:
                     if this_ip_range is other_ip_range:
-                        return False
+                        return False, this_list.index(this_ip_range)
                     elif this_ip_range[0] <= other_ip_range[0] < this_ip_range[1]:
-                        return False
+                        return False, this_list.index(this_ip_range)
                     elif other_ip_range[0] <= this_ip_range[0] < other_ip_range[1]:
-                        return False
+                        return False, this_list.index(this_ip_range)
         return True
 
     def get_list(self) -> list:
