@@ -1,3 +1,0 @@
-'''
-Yet another test
-'''

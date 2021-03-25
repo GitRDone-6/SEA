@@ -1,3 +1,6 @@
+from db import connect
+
+
 class ToolDependency:
     """
     Class that contains data regarding an underlying tool's dependency

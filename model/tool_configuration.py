@@ -1,36 +1,37 @@
+from db import connect
+
+
 class ToolConfiguration:
     """
     Sets the configuration settings for a tool
     """
 
+    _tool_name, _tool_description, _tool_path, _tool_option_arg = ''
+    _tool_output_data_specification = ['','']
+    _tool_dependency = None
+
     def __init__(self):
-        pass
+
+    def set_name(self, name):
+        self._tool_name = name
 
     def tool_name(self):
-        pass
+        return self._tool_name
+
+    def set_description(self, description):
+        self._tool_description = description
 
     def tool_description(self):
-        pass
+        return self._tool_description
+
+    def set_path(self, path):
+        self._tool_path = path
 
     def tool_path(self):
-        pass
+        return self._tool_path
+
+    def set_option_arg(self, option_arg):
+        self._tool_option_arg = option_arg
 
     def tool_option_arg(self):
-        pass
-
-    """
-    output data specification from OutputDataSpecification
-    """
-
-    """
-    tool dependency from ToolDependency
-    """
-
-    def __check_tool_option_arg(self):
-        pass
-
-    def __check_output_data(self):
-        pass
-
-    def __check_tool_dependency(self):
-        pass
+        return self._tool_option_arg

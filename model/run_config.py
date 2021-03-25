@@ -1,9 +1,12 @@
-import RunState
+from model import run_state
+from db import connect
+
 
 class RunConfig:
-    def __init__(self, name, description ):
+    def __init__(self, name, description, database):
         self.name = name
         self.description = description
+        self.database = database
         pass
 
     def getName(self):
@@ -25,4 +28,8 @@ class RunConfig:
         pass
         
     def getscanConfig(self):
+        pass
+
+    def save(self):
+        database.connect()
         pass

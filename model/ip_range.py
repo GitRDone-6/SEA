@@ -55,14 +55,59 @@ class IPRange:
         self._check_valid_range(lower, upper)
         singular_range = lower is upper
         new_range = IPRange(lower, upper)
+        #check if new range is exclusive and get the index where it was not
         exclusive, index = self.is_mutually_exclusive(new_range)
         if not exclusive:
-            if self._list[index][1] >= upper and lower < self._list[index][0]:
+            #Singular tuple
+            if type(self._list[index]) is str:
+                #TODO Make the case where the mutually inclusive range is handled here
+            #If its the case where o[---n)o) and n[-o[-), then the o[ is now n[
+            elif self._list[index][1] >= upper and lower < self._list[index][0]:
                 self._list[index][0] = lower
+            #If its the case where o[n[ and o)-n)
             elif self._list[index][0] <= lower and upper > self._list[index][1]:
-                ranges_to_delete = []
-                for i in range(index, len(self._list)):
-
+                '''
+                It doesn't know if the new upper bound is greater than only this old ip upper bound or the next one's as
+                well. So we must check each one after the one in the index.
+                '''
+                #If its the last element of the list, just update the upper.
+                if index is len(self._list)-1:
+                    self._list[index][1] = upper
+                #Since there might be more than one tuple to eliminate, then lets track how many.
+                ranges_to_eliminate = 0
+                for ip_range in self._list:
+                    #Check if the tuple the i is on is singular
+                    if type(ip_range) is str:
+                        # If the singular tuple is equal to the upper, then increment, update the upper for index,
+                        # and stop.
+                        if ip_range is upper:
+                            ranges_to_eliminate += 1
+                            self._list[index][1] = upper
+                            break
+                        # If the singular tuple is greater than the upper, then just update the upper for index, and
+                        # stop.
+                        elif ip_range > upper:
+                            self._list[index][1] = upper
+                            break
+                        # All that's left is if the singular tuple is less than the upper; increment, update, and cont.
+                        else:
+                            ranges_to_eliminate += 1
+                            self._list[index][1] = upper
+                    #Non-singular tuples
+                    #If n)-o[, update index and stop
+                    elif upper < ip_range[1]:
+                        self._list[index][1] = upper
+                    #If the case is o[n) and n)o), remove this index, expand the original upper, and stop
+                    elif ip_range[0] <= upper <= ip_range[1]:
+                        ranges_to_eliminate += 1
+                        self._list[index][1] = upper
+                        break
+                    #If o(-o]-n], increment, and continue
+                    elif ip_range[0] <= upper > ip_range[1]:
+                        ranges_to_eliminate += 1
+                #Eliminate the range tuples
+        else:
+            # Search where to insert the new ip tuple
 
 
 
@@ -89,13 +134,14 @@ class IPRange:
         other_list = other.get_list()
         for this_ip_range in this_list:
             for other_ip_range in other_list:
-                if len(this_ip_range) is 1 and len(other_ip_range) is 1:
+                #Only way to check if a tuple is singular is a type check, len returns the len of the element itself
+                if type(this_ip_range) is str and type(other_ip_range) is str:
                     if this_ip_range[0] is other_ip_range[0]:
                         return False, this_list.index(this_ip_range)
-                elif len(this_ip_range) is 1 and len(other_ip_range) is not 1:
+                elif type(this_ip_range) is str and type(other_ip_range) is not str:
                     if other_ip_range[0] <= this_ip_range[0] < other_ip_range[1]:
                         return False, this_list.index(this_ip_range)
-                elif len(this_ip_range) is not 1 and len(other_ip_range) is 1:
+                elif type(this_ip_range) is not str and type(other_ip_range) is str:
                     if this_ip_range[0] <= other_ip_range[0] < this_ip_range[1]:
                         return False, this_list.index(this_ip_range)
                 else:
@@ -105,7 +151,7 @@ class IPRange:
                         return False, this_list.index(this_ip_range)
                     elif other_ip_range[0] <= this_ip_range[0] < other_ip_range[1]:
                         return False, this_list.index(this_ip_range)
-        return True
+        return True, None
 
     def get_list(self) -> list:
         """
@@ -142,7 +188,7 @@ class IPRange:
         """
         pass
 
-    def remove_(self, range: 'IPRange') -> bool:
+    def eliminate(self, range: 'IPRange') -> bool:
         """
         Removes all of the IPs from the IP Range
         :param ip_range:

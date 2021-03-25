@@ -1,3 +1,6 @@
+from db import connect
+
+
 class XMLReport:
     """
     Class that generates XML report
