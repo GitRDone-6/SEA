@@ -99,6 +99,8 @@ class Ui_MainWindow(object):
 
         self.button_add_run = QPushButton(self.layoutWidget)
         self.button_add_run.setObjectName(u"button_add_run")
+        self.button_add_run.clicked.connect(self.button_add_run_on_click)
+
         font = QFont()
         font.setPointSize(11)
         font.setBold(True)
@@ -115,18 +117,21 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.button_play_run = QPushButton(self.layoutWidget1)
         self.button_play_run.setObjectName(u"button_play_run")
+        self.button_play_run.clicked.connect(self.button_play_run_on_click)
         self.button_play_run.setFont(font)
 
         self.horizontalLayout_3.addWidget(self.button_play_run)
 
         self.button_pause_run = QPushButton(self.layoutWidget1)
         self.button_pause_run.setObjectName(u"button_pause_run")
+        self.button_pause_run.clicked.connect(self.button_pause_run_on_click)
         self.button_pause_run.setFont(font)
 
         self.horizontalLayout_3.addWidget(self.button_pause_run)
 
         self.button_stop_run = QPushButton(self.layoutWidget1)
         self.button_stop_run.setObjectName(u"button_stop_run")
+        self.button_stop_run.clicked.connect(self.button_stop_run_on_click)
         self.button_stop_run.setFont(font)
 
         self.horizontalLayout_3.addWidget(self.button_stop_run)
@@ -261,6 +266,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.button_browse_config_file = QPushButton(self.layoutWidget6)
         self.button_browse_config_file.setObjectName(u"button_browse_config_file")
+        self.button_browse_config_file.clicked.connect(self.button_browse_config_file_on_click)
         self.button_browse_config_file.setFont(font)
 
         self.verticalLayout_6.addWidget(self.button_browse_config_file)
@@ -362,18 +368,21 @@ class Ui_MainWindow(object):
         self.horizontalLayout_7.setSizeConstraint(QLayout.SetMinimumSize)
         self.button_play_detailed_run = QPushButton(self.layoutWidget7)
         self.button_play_detailed_run.setObjectName(u"button_play_detailed_run")
+        self.button_play_detailed_run.clicked.connect(self.button_play_detailed_run_on_click)
         self.button_play_detailed_run.setFont(font)
 
         self.horizontalLayout_7.addWidget(self.button_play_detailed_run)
 
         self.button_pause_detailed_run = QPushButton(self.layoutWidget7)
         self.button_pause_detailed_run.setObjectName(u"button_pause_detailed_run")
+        self.button_pause_detailed_run.clicked.connect(self.button_pause_detailed_run_on_click)
         self.button_pause_detailed_run.setFont(font)
 
         self.horizontalLayout_7.addWidget(self.button_pause_detailed_run)
 
         self.button_stop_detailed_run = QPushButton(self.layoutWidget7)
         self.button_stop_detailed_run.setObjectName(u"button_stop_detailed_run")
+        self.button_stop_detailed_run.clicked.connect(self.button_stop_detailed_run_on_click)
         self.button_stop_detailed_run.setFont(font)
 
         self.horizontalLayout_7.addWidget(self.button_stop_detailed_run)
@@ -475,6 +484,7 @@ class Ui_MainWindow(object):
 
         self.button_remove_report = QPushButton(self.xml_report_area)
         self.button_remove_report.setObjectName(u"button_remove_report")
+        self.button_remove_report.clicked.connect(self.button_remove_report_on_click)
         self.button_remove_report.setFont(font)
 
         self.horizontalLayout_8.addWidget(self.button_remove_report)
@@ -514,18 +524,21 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
         self.button_add_report = QPushButton(self.xml_report_area)
         self.button_add_report.setObjectName(u"button_add_report")
+        self.button_add_report.clicked.connect(self.button_add_report_on_click)
         self.button_add_report.setFont(font)
 
         self.horizontalLayout_10.addWidget(self.button_add_report)
 
         self.button_generate_report = QPushButton(self.xml_report_area)
         self.button_generate_report.setObjectName(u"button_generate_report")
+        self.button_generate_report.clicked.connect(self.button_generate_report_on_click)
         self.button_generate_report.setFont(font)
 
         self.horizontalLayout_10.addWidget(self.button_generate_report)
 
         self.button_cancel_report = QPushButton(self.xml_report_area)
         self.button_cancel_report.setObjectName(u"button_cancel_report")
+        self.button_cancel_report.clicked.connect(self.button_cancel_report_on_click)
         self.button_cancel_report.setFont(font)
 
         self.horizontalLayout_10.addWidget(self.button_cancel_report)
@@ -613,13 +626,15 @@ class Ui_MainWindow(object):
         self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
         self.pushbutton_add_tool = QPushButton(self.layoutWidget8)
         self.pushbutton_add_tool.setObjectName(u"pushbutton_add_tool")
-        self.pushbutton_add_tool.clicked.connect(self.button_save_run_config_on_click)
+        self.pushbutton_add_tool.clicked.connect(self.pushbutton_add_tool_on_click)
 
 
         self.horizontalLayout_9.addWidget(self.pushbutton_add_tool)
 
         self.pushbutton_delete_tool = QPushButton(self.layoutWidget8)
         self.pushbutton_delete_tool.setObjectName(u"pushbutton_delete_tool")
+        self.pushbutton_delete_tool.clicked.connect(self.pushbutton_delete_tool)
+
         font1 = QFont()
         font1.setPointSize(13)
         font1.setBold(True)
@@ -630,11 +645,13 @@ class Ui_MainWindow(object):
 
         self.pushbutton_move_up = QPushButton(self.layoutWidget8)
         self.pushbutton_move_up.setObjectName(u"pushbutton_move_up")
+        self.pushbutton_move_up.clicked.connect(self.pushbutton_move_up_on_click)
 
         self.horizontalLayout_9.addWidget(self.pushbutton_move_up)
 
         self.pushbutton_move_down = QPushButton(self.layoutWidget8)
         self.pushbutton_move_down.setObjectName(u"pushbutton_move_down")
+        self.pushbutton_move_down.clicked.connect(self.pushbutton_move_down_on_click)
 
         self.horizontalLayout_9.addWidget(self.pushbutton_move_down)
 
@@ -711,6 +728,7 @@ class Ui_MainWindow(object):
 
         self.button_tool_path_browse = QPushButton(self.layoutWidget12)
         self.button_tool_path_browse.setObjectName(u"button_tool_path_browse")
+        self.button_tool_path_browse.clicked.connect(self.button_tool_path_browse_on_click)
 
         self.horizontalLayout_15.addWidget(self.button_tool_path_browse)
 
@@ -732,6 +750,7 @@ class Ui_MainWindow(object):
 
         self.button_option_argument_add = QPushButton(self.layoutWidget13)
         self.button_option_argument_add.setObjectName(u"button_option_argument_add")
+        self.button_option_argument_add.clicked.connect(self.button_option_argument_add_on_click)
 
         self.horizontalLayout_16.addWidget(self.button_option_argument_add)
 
@@ -753,6 +772,7 @@ class Ui_MainWindow(object):
 
         self.button_output_data_add = QPushButton(self.layoutWidget14)
         self.button_output_data_add.setObjectName(u"button_output_data_add")
+        self.button_output_data_add.clicked.connect(self.button_output_data_add_on_click)
 
         self.horizontalLayout_17.addWidget(self.button_output_data_add)
 
@@ -760,10 +780,12 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_21.addWidget(self.splitter_7)
 
-        self.pushButton = QPushButton(self.layoutWidget9)
-        self.pushButton.setObjectName(u"pushButton")
+        self.pushbutton_export_tool_spec_file = QPushButton(self.layoutWidget9)
+        self.pushbutton_export_tool_spec_file.setObjectName(u"pushbutton_export_tool_spec_file")
+        self.pushbutton_export_tool_spec_file.clicked.connect(self.pushbutton_export_tool_spec_file_on_click)
 
-        self.verticalLayout_21.addWidget(self.pushButton)
+
+        self.verticalLayout_21.addWidget(self.pushbutton_export_tool_spec_file)
 
         self.tool_specification_OR_label = QLabel(self.layoutWidget9)
         self.tool_specification_OR_label.setObjectName(u"tool_specification_OR_label")
@@ -780,6 +802,7 @@ class Ui_MainWindow(object):
         self.splitter_6.addWidget(self.tool_specification_file_input)
         self.tool_specification_browse_button = QPushButton(self.splitter_6)
         self.tool_specification_browse_button.setObjectName(u"tool_specification_browse_button")
+        self.tool_specification_browse_button.clicked.connect(self.tool_specification_browse_button_on_click)
         self.splitter_6.addWidget(self.tool_specification_browse_button)
 
         self.verticalLayout_21.addWidget(self.splitter_6)
@@ -838,16 +861,18 @@ class Ui_MainWindow(object):
 
         self.dependency_remove_button = QPushButton(self.layoutWidget15)
         self.dependency_remove_button.setObjectName(u"dependency_remove_button")
+        self.dependency_remove_button.clicked.connect(self.dependency_remove_button_on_click)
 
         self.horizontalLayout_11.addWidget(self.dependency_remove_button)
 
 
         self.verticalLayout_18.addLayout(self.horizontalLayout_11)
 
-        self.pushButton_2 = QPushButton(self.layoutWidget15)
-        self.pushButton_2.setObjectName(u"pushButton_2")
+        self.pushbutton_add_tool_specification = QPushButton(self.layoutWidget15)
+        self.pushbutton_add_tool_specification.setObjectName(u"pushbutton_add_tool_specification")
+        self.pushbutton_add_tool_specification.clicked.connect(self.pushbutton_add_tool_specification_on_click)
 
-        self.verticalLayout_18.addWidget(self.pushButton_2)
+        self.verticalLayout_18.addWidget(self.pushbutton_add_tool_specification)
 
         self.verticalSpacer_4 = QSpacerItem(20, 100, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
@@ -857,11 +882,13 @@ class Ui_MainWindow(object):
         self.cancel_save_layout.setObjectName(u"cancel_save_layout")
         self.save_button = QPushButton(self.layoutWidget15)
         self.save_button.setObjectName(u"save_button")
+        self.save_button.clicked.connect(self.save_button_on_click)
 
         self.cancel_save_layout.addWidget(self.save_button)
 
         self.cancel_button = QPushButton(self.layoutWidget15)
         self.cancel_button.setObjectName(u"cancel_button")
+        self.cancel_button.clicked.connect(self.cancel_button_on_click)
 
         self.cancel_save_layout.addWidget(self.cancel_button)
 
@@ -1001,7 +1028,7 @@ class Ui_MainWindow(object):
         self.button_option_argument_add.setText(QCoreApplication.translate("MainWindow", u"Add", None))
         self.label_output_data.setText(QCoreApplication.translate("MainWindow", u"Output Data Specification: ", None))
         self.button_output_data_add.setText(QCoreApplication.translate("MainWindow", u"Add", None))
-        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Export as Tool Specification File...", None))
+        self.pushbutton_export_tool_spec_file.setText(QCoreApplication.translate("MainWindow", u"Export as Tool Specification File...", None))
         self.tool_specification_OR_label.setText(QCoreApplication.translate("MainWindow", u"OR", None))
         self.tool_specification_file_input.setText("")
         self.tool_specification_file_input.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Tool Specification File", None))
@@ -1017,16 +1044,13 @@ class Ui_MainWindow(object):
         self.dependent_data_drop_down.setItemText(1, QCoreApplication.translate("MainWindow", u"New Item", None))
 
         self.dependency_remove_button.setText(QCoreApplication.translate("MainWindow", u"Remove", None))
-        self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"Add", None))
+        self.pushbutton_add_tool_specification.setText(QCoreApplication.translate("MainWindow", u"Add", None))
         self.save_button.setText(QCoreApplication.translate("MainWindow", u"Save", None))
         self.cancel_button.setText(QCoreApplication.translate("MainWindow", u"Cancel", None))
         self.menuSEA_Menu.setTitle(QCoreApplication.translate("MainWindow", u"SEA Menu", None))
         self.menuHelp.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))
     # retranslateUi
 
-
-    def button_save_run_config_on_click(self):
-        print('hello')
 
     def actionRun_List_2_on_click(self):
         # Set to run side
@@ -1055,6 +1079,115 @@ class Ui_MainWindow(object):
     def actionTool_on_click(self):
         # Set to tool side
         self.stacked_content_area.setCurrentIndex(1)
+
+    def pushbutton_add_tool_on_click(self):
+        #TODO add implementation
+        pass
+
+    def pushbutton_delete_tool_on_click(self):
+        # TODO add implementation
+        pass
+
+    def pushbutton_move_down_on_click(self):
+        # TODO add implementation
+        pass
+
+    def pushbutton_move_up_on_click(self):
+        # TODO add implementation
+        pass
+
+    def button_tool_path_browse_on_click(self):
+        # TODO add implementation
+        pass
+
+    def button_option_argument_add_on_click(self):
+        # TODO add implementation
+        pass
+
+    def button_output_data_add_on_click(self):
+        # TODO add implementation
+        pass
+
+    def pushbutton_export_tool_spec_file_on_click(self):
+        # TODO add implementation
+        pass
+
+    def tool_specification_browse_button_on_click(self):
+        # TODO add implementation
+        pass
+
+    def dependency_remove_button_on_click(self):
+        # TODO add implementation
+        pass
+
+    def pushbutton_add_tool_specification_on_click(self):
+        # TODO add implementation
+        pass
+
+    def save_button_on_click(self):
+        # TODO add implementation
+        pass
+
+    def cancel_button_on_click(self):
+        # TODO add implementation
+        pass
+
+    def button_play_detailed_run_on_click(self):
+        # TODO add implementation
+        pass
+
+    def button_pause_detailed_run_on_click(self):
+        # TODO add implementation
+        pass
+
+    def button_stop_detailed_run_on_click(self):
+        # TODO add implementation
+        pass
+
+    def button_remove_report_on_click(self):
+        # TODO add implementation
+        pass
+
+    def button_add_report_on_click(self):
+        # TODO add implementation
+        pass
+
+    def button_cancel_report_on_click(self):
+        # TODO add implementation
+        pass
+
+    def button_generate_report_on_click(self):
+        # TODO add implementation
+        pass
+
+    def button_add_run_on_click(self):
+        # TODO add implementation
+        pass
+
+    def button_pause_run_on_click(self):
+        # TODO add implementation
+        pass
+
+    def button_play_run_on_click(self):
+        # TODO add implementation
+        pass
+
+    def button_stop_run_on_click(self):
+        # TODO add implementation
+        pass
+
+    def button_browse_config_file_on_click(self):
+        # TODO add implementation
+        pass
+
+    def button_save_run_config_on_click(self):
+        # TODO add implementation
+        pass
+
+    def button_cancel_run_config_on_click(self):
+        # TODO add implementation
+        pass
+
 
 
 class ThisWindow(QMainWindow):
