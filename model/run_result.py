@@ -1,20 +1,25 @@
+from model import scan_result, run_configuration
+
+
 class RunResult:
     """
     Stores the statistical data from a Run
     """
 
+    __timestamp = None
+    __run_configuration: run_configuration.RunConfiguration
+    __scan_results: scan_result.ScanResult
+
     def __init__(self):
         pass
 
     def timestamp(self):
-        pass
+        return self.__timestamp
 
-    """
-    Knows at least 1 scan result from ScanResult
-    """
+    def run_config(self) -> run_configuration.RunConfiguration:
+        return self.__run_configuration
 
-    """
-    knows 1 run configuration from RunConfiguration
-    """
+    def scan_results(self) -> scan_result.ScanResult:
+        return self.__scan_results
 
 
