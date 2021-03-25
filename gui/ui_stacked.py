@@ -14,13 +14,14 @@ from PyQt5.QtCore import QCoreApplication, QMetaObject, QRect, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QAction, QWidget, QStackedWidget, QGridLayout, QSplitter, \
     QVBoxLayout, QStatusBar, QMenu, QMenuBar, QSizePolicy, QSpacerItem, QComboBox, QLineEdit, QLabel, QFrame, \
-    QPlainTextEdit, QTableWidgetItem, QTableWidget, QTabWidget, QLayout,QMainWindow, QApplication
+    QPlainTextEdit, QTableWidgetItem, QTableWidget, QTabWidget, QLayout, QMainWindow, QApplication
 
-#from model import run_config
 
-#from PySide2.QtCore import *
-#from PySide2.QtGui import *
-#from PySide2.QtWidgets import *
+# from model import run_config
+
+# from PySide2.QtCore import *
+# from PySide2.QtGui import *
+# from PySide2.QtWidgets import *
 
 
 class Ui_MainWindow(object):
@@ -28,9 +29,9 @@ class Ui_MainWindow(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(1100, 751)
-        self.actionTool = QAction(MainWindow)
-        self.actionTool.setObjectName(u"actionTool")
-        self.actionTool.triggered.connect(self.actionTool_on_click)
+        self.action_tool = QAction(MainWindow)
+        self.action_tool.setObjectName(u"action_tool")
+        self.action_tool.triggered.connect(self.action_tool_on_click)
         self.actionRun_List = QAction(MainWindow)
         self.actionRun_List.setObjectName(u"actionRun_List")
         self.actionConfiguration_of_Runs = QAction(MainWindow)
@@ -39,18 +40,18 @@ class Ui_MainWindow(object):
         self.actionDetailed_Statistical_Data.setObjectName(u"actionDetailed_Statistical_Data")
         self.actionXML_Report = QAction(MainWindow)
         self.actionXML_Report.setObjectName(u"actionXML_Report")
-        self.actionRun_List_2 = QAction(MainWindow)
-        self.actionRun_List_2.setObjectName(u"actionRun_List_2")
-        self.actionRun_List_2.triggered.connect(self.actionRun_List_2_on_click)
-        self.actionConfiguration_of_Run = QAction(MainWindow)
-        self.actionConfiguration_of_Run.setObjectName(u"actionConfiguration_of_Run")
-        self.actionConfiguration_of_Run.triggered.connect(self.actionConfiguration_of_run_on_click)
-        self.actionDetailed_Specific_Data = QAction(MainWindow)
-        self.actionDetailed_Specific_Data.setObjectName(u"actionDetailed_Specific_Data")
-        self.actionDetailed_Specific_Data.triggered.connect(self.actionDetailed_specific_data_on_click)
-        self.actionXML_Report_Area = QAction(MainWindow)
-        self.actionXML_Report_Area.setObjectName(u"actionXML_Report_Area")
-        self.actionXML_Report_Area.triggered.connect(self.actionXML_report_area_on_click)
+        self.action_run_list = QAction(MainWindow)
+        self.action_run_list.setObjectName(u"action_run_list")
+        self.action_run_list.triggered.connect(self.action_run_list_on_click)
+        self.action_configuration_of_Run = QAction(MainWindow)
+        self.action_configuration_of_Run.setObjectName(u"action_configuration_of_Run")
+        self.action_configuration_of_Run.triggered.connect(self.action_configuration_of_run_on_click)
+        self.action_detailed_specific_data = QAction(MainWindow)
+        self.action_detailed_specific_data.setObjectName(u"action_detailed_specific_data")
+        self.action_detailed_specific_data.triggered.connect(self.action_detailed_specific_data_on_click)
+        self.action_xml_report_area = QAction(MainWindow)
+        self.action_xml_report_area.setObjectName(u"action_xml_report_area")
+        self.action_xml_report_area.triggered.connect(self.action_xml_report_area_on_click)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout = QHBoxLayout(self.centralwidget)
@@ -210,7 +211,6 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_5.addWidget(self.textbox_whitelist)
 
-
         self.horizontalLayout_5.addLayout(self.verticalLayout_5)
 
         self.verticalLayout_7 = QVBoxLayout()
@@ -224,7 +224,6 @@ class Ui_MainWindow(object):
         self.textbox_blacklist.setObjectName(u"textbox_blacklist")
 
         self.verticalLayout_7.addWidget(self.textbox_blacklist)
-
 
         self.horizontalLayout_5.addLayout(self.verticalLayout_7)
 
@@ -249,7 +248,6 @@ class Ui_MainWindow(object):
         self.dropdown_scantype.setEditable(True)
 
         self.verticalLayout_4.addWidget(self.dropdown_scantype)
-
 
         self.horizontalLayout_4.addLayout(self.verticalLayout_4)
 
@@ -281,7 +279,6 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_8.addWidget(self.splitter_2)
 
-
         self.gridLayout_4.addLayout(self.verticalLayout_8, 0, 0, 1, 1)
 
         self.horizontalLayout_6 = QHBoxLayout()
@@ -301,15 +298,14 @@ class Ui_MainWindow(object):
 
         self.button_cancel_run_config = QPushButton(self.configuration_run_area)
         self.button_cancel_run_config.setObjectName(u"button_cancel_run_config")
+        self.button_cancel_run_config.clicked.connect(self.button_cancel_run_config_on_click)
         sizePolicy.setHeightForWidth(self.button_cancel_run_config.sizePolicy().hasHeightForWidth())
         self.button_cancel_run_config.setSizePolicy(sizePolicy)
         self.button_cancel_run_config.setFont(font)
 
         self.horizontalLayout_6.addWidget(self.button_cancel_run_config)
 
-
         self.gridLayout_4.addLayout(self.horizontalLayout_6, 1, 0, 1, 1)
-
 
         self.gridLayout_2.addLayout(self.gridLayout_4, 1, 0, 1, 1)
 
@@ -387,7 +383,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_7.addWidget(self.button_stop_detailed_run)
 
-
         self.verticalLayout_9.addLayout(self.horizontalLayout_7)
 
         self.splitter_5.addWidget(self.layoutWidget7)
@@ -429,7 +424,6 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_10.addWidget(self.textline_report_name)
 
-
         self.verticalLayout_12.addLayout(self.verticalLayout_10)
 
         self.verticalLayout_11 = QVBoxLayout()
@@ -448,9 +442,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_11.addItem(self.verticalSpacer)
 
-
         self.verticalLayout_12.addLayout(self.verticalLayout_11)
-
 
         self.verticalLayout_16.addLayout(self.verticalLayout_12)
 
@@ -467,7 +459,6 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_14.addWidget(self.dropbox_run_pair)
 
-
         self.horizontalLayout_8.addLayout(self.verticalLayout_14)
 
         self.verticalLayout_15 = QVBoxLayout()
@@ -479,7 +470,6 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_15.addWidget(self.dropbox_scan_duel)
 
-
         self.horizontalLayout_8.addLayout(self.verticalLayout_15)
 
         self.button_remove_report = QPushButton(self.xml_report_area)
@@ -488,7 +478,6 @@ class Ui_MainWindow(object):
         self.button_remove_report.setFont(font)
 
         self.horizontalLayout_8.addWidget(self.button_remove_report)
-
 
         self.verticalLayout_19.addLayout(self.horizontalLayout_8)
 
@@ -507,12 +496,9 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_13.addWidget(self.dropbox_run_solo)
 
-
         self.verticalLayout_19.addLayout(self.verticalLayout_13)
 
-
         self.verticalLayout_16.addLayout(self.verticalLayout_19)
-
 
         self.verticalLayout_17.addLayout(self.verticalLayout_16)
 
@@ -543,9 +529,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_10.addWidget(self.button_cancel_report)
 
-
         self.verticalLayout_17.addLayout(self.horizontalLayout_10)
-
 
         self.gridLayout_6.addLayout(self.verticalLayout_17, 1, 0, 1, 1)
 
@@ -628,12 +612,11 @@ class Ui_MainWindow(object):
         self.pushbutton_add_tool.setObjectName(u"pushbutton_add_tool")
         self.pushbutton_add_tool.clicked.connect(self.pushbutton_add_tool_on_click)
 
-
         self.horizontalLayout_9.addWidget(self.pushbutton_add_tool)
 
         self.pushbutton_delete_tool = QPushButton(self.layoutWidget8)
         self.pushbutton_delete_tool.setObjectName(u"pushbutton_delete_tool")
-        self.pushbutton_delete_tool.clicked.connect(self.pushbutton_delete_tool)
+        self.pushbutton_delete_tool.clicked.connect(self.pushbutton_delete_tool_on_click)
 
         font1 = QFont()
         font1.setPointSize(13)
@@ -658,7 +641,6 @@ class Ui_MainWindow(object):
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_9.addItem(self.horizontalSpacer)
-
 
         self.verticalLayout_20.addLayout(self.horizontalLayout_9)
 
@@ -784,7 +766,6 @@ class Ui_MainWindow(object):
         self.pushbutton_export_tool_spec_file.setObjectName(u"pushbutton_export_tool_spec_file")
         self.pushbutton_export_tool_spec_file.clicked.connect(self.pushbutton_export_tool_spec_file_on_click)
 
-
         self.verticalLayout_21.addWidget(self.pushbutton_export_tool_spec_file)
 
         self.tool_specification_OR_label = QLabel(self.layoutWidget9)
@@ -835,7 +816,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_12.addWidget(self.lineEdit)
 
-
         self.verticalLayout_18.addLayout(self.horizontalLayout_12)
 
         self.horizontalLayout_11 = QHBoxLayout()
@@ -865,7 +845,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_11.addWidget(self.dependency_remove_button)
 
-
         self.verticalLayout_18.addLayout(self.horizontalLayout_11)
 
         self.pushbutton_add_tool_specification = QPushButton(self.layoutWidget15)
@@ -891,7 +870,6 @@ class Ui_MainWindow(object):
         self.cancel_button.clicked.connect(self.cancel_button_on_click)
 
         self.cancel_save_layout.addWidget(self.cancel_button)
-
 
         self.verticalLayout_18.addLayout(self.cancel_save_layout)
 
@@ -926,12 +904,12 @@ class Ui_MainWindow(object):
 
         self.menubar.addAction(self.menuSEA_Menu.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
-        self.menuSEA_Menu.addAction(self.actionRun_List_2)
-        self.menuSEA_Menu.addAction(self.actionConfiguration_of_Run)
-        self.menuSEA_Menu.addAction(self.actionDetailed_Specific_Data)
-        self.menuSEA_Menu.addAction(self.actionXML_Report_Area)
+        self.menuSEA_Menu.addAction(self.action_run_list)
+        self.menuSEA_Menu.addAction(self.action_configuration_of_Run)
+        self.menuSEA_Menu.addAction(self.action_detailed_specific_data)
+        self.menuSEA_Menu.addAction(self.action_xml_report_area)
         self.menuSEA_Menu.addSeparator()
-        self.menuSEA_Menu.addAction(self.actionTool)
+        self.menuSEA_Menu.addAction(self.action_tool)
 
         self.retranslateUi(MainWindow)
 
@@ -940,21 +918,24 @@ class Ui_MainWindow(object):
         self.tab_scan_result_area.setCurrentIndex(2)
         self.stacked_tool_content_area.setCurrentIndex(0)
 
-
         QMetaObject.connectSlotsByName(MainWindow)
+
     # setupUi
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.actionTool.setText(QCoreApplication.translate("MainWindow", u"Tool", None))
+        self.action_tool.setText(QCoreApplication.translate("MainWindow", u"Tool", None))
         self.actionRun_List.setText(QCoreApplication.translate("MainWindow", u"Run List", None))
-        self.actionConfiguration_of_Runs.setText(QCoreApplication.translate("MainWindow", u"Configuration of Runs", None))
-        self.actionDetailed_Statistical_Data.setText(QCoreApplication.translate("MainWindow", u"Detailed Statistical Data", None))
+        self.actionConfiguration_of_Runs.setText(
+            QCoreApplication.translate("MainWindow", u"Configuration of Runs", None))
+        self.actionDetailed_Statistical_Data.setText(
+            QCoreApplication.translate("MainWindow", u"Detailed Statistical Data", None))
         self.actionXML_Report.setText(QCoreApplication.translate("MainWindow", u"XML Report", None))
-        self.actionRun_List_2.setText(QCoreApplication.translate("MainWindow", u"Run List", None))
-        self.actionConfiguration_of_Run.setText(QCoreApplication.translate("MainWindow", u"Configuration of Run", None))
-        self.actionDetailed_Specific_Data.setText(QCoreApplication.translate("MainWindow", u"Detailed Statistical Data", None))
-        self.actionXML_Report_Area.setText(QCoreApplication.translate("MainWindow", u"XML Report", None))
+        self.action_run_list.setText(QCoreApplication.translate("MainWindow", u"Run List", None))
+        self.action_configuration_of_Run.setText(QCoreApplication.translate("MainWindow", u"Configuration of Run", None))
+        self.action_detailed_specific_data.setText(
+            QCoreApplication.translate("MainWindow", u"Detailed Statistical Data", None))
+        self.action_xml_report_area.setText(QCoreApplication.translate("MainWindow", u"XML Report", None))
         ___qtablewidgetitem = self.table_run_list.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Name of Run \u21f5", None));
         ___qtablewidgetitem1 = self.table_run_list.horizontalHeaderItem(1)
@@ -967,18 +948,33 @@ class Ui_MainWindow(object):
         self.button_play_run.setText(QCoreApplication.translate("MainWindow", u"Play", None))
         self.button_pause_run.setText(QCoreApplication.translate("MainWindow", u"Pause", None))
         self.button_stop_run.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:11pt; font-weight:600;\">Run List</span></p></body></html>", None))
-        self.label_run_name.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">Run Name</span></p></body></html>", None))
-        self.label_run_desc.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">Run Description</span></p></body></html>", None))
-        self.label_whitelist.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">Whitelisted IP Target</span></p></body></html>", None))
-        self.label_blacklist.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">Blacklisted IP Target</span></p></body></html>", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow",
+                                                        u"<html><head/><body><p align=\"center\"><span style=\" font-size:11pt; font-weight:600;\">Run List</span></p></body></html>",
+                                                        None))
+        self.label_run_name.setText(QCoreApplication.translate("MainWindow",
+                                                               u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">Run Name</span></p></body></html>",
+                                                               None))
+        self.label_run_desc.setText(QCoreApplication.translate("MainWindow",
+                                                               u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">Run Description</span></p></body></html>",
+                                                               None))
+        self.label_whitelist.setText(QCoreApplication.translate("MainWindow",
+                                                                u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">Whitelisted IP Target</span></p></body></html>",
+                                                                None))
+        self.label_blacklist.setText(QCoreApplication.translate("MainWindow",
+                                                                u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">Blacklisted IP Target</span></p></body></html>",
+                                                                None))
         self.dropdown_scantype.setCurrentText(QCoreApplication.translate("MainWindow", u"Scan Type", None))
         self.label_or.setText(QCoreApplication.translate("MainWindow", u"OR", None))
-        self.button_browse_config_file.setText(QCoreApplication.translate("MainWindow", u"Run Configuration File...", None))
-        self.label_run_config_filename.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">example_run_config.xml</span></p></body></html>", None))
+        self.button_browse_config_file.setText(
+            QCoreApplication.translate("MainWindow", u"Run Configuration File...", None))
+        self.label_run_config_filename.setText(QCoreApplication.translate("MainWindow",
+                                                                          u"<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">example_run_config.xml</span></p></body></html>",
+                                                                          None))
         self.button_save_run_config.setText(QCoreApplication.translate("MainWindow", u"Save", None))
         self.button_cancel_run_config.setText(QCoreApplication.translate("MainWindow", u"Cancel", None))
-        self.label_4.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600;\">Configuration of the Selected Run</span></p></body></html>", None))
+        self.label_4.setText(QCoreApplication.translate("MainWindow",
+                                                        u"<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600;\">Configuration of the Selected Run</span></p></body></html>",
+                                                        None))
         ___qtablewidgetitem4 = self.table_statistical_data.horizontalHeaderItem(0)
         ___qtablewidgetitem4.setText(QCoreApplication.translate("MainWindow", u"Name of Scan \u21f5", None));
         ___qtablewidgetitem5 = self.table_statistical_data.horizontalHeaderItem(1)
@@ -996,20 +992,31 @@ class Ui_MainWindow(object):
         self.button_play_detailed_run.setText(QCoreApplication.translate("MainWindow", u"Play", None))
         self.button_pause_detailed_run.setText(QCoreApplication.translate("MainWindow", u"Pause", None))
         self.button_stop_detailed_run.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
-        self.tab_scan_result_area.setTabText(self.tab_scan_result_area.indexOf(self.example_scan_output_1), QCoreApplication.translate("MainWindow", u"Name of Scan 1", None))
-        self.tab_scan_result_area.setTabText(self.tab_scan_result_area.indexOf(self.example_scan_output_2), QCoreApplication.translate("MainWindow", u"...", None))
-        self.tab_scan_result_area.setTabText(self.tab_scan_result_area.indexOf(self.example_scan_output_3), QCoreApplication.translate("MainWindow", u">>", None))
-        self.label_report_name.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">Report Name</span></p></body></html>", None))
-        self.label_report_desc.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">Report Description</span></p></body></html>", None))
+        self.tab_scan_result_area.setTabText(self.tab_scan_result_area.indexOf(self.example_scan_output_1),
+                                             QCoreApplication.translate("MainWindow", u"Name of Scan 1", None))
+        self.tab_scan_result_area.setTabText(self.tab_scan_result_area.indexOf(self.example_scan_output_2),
+                                             QCoreApplication.translate("MainWindow", u"...", None))
+        self.tab_scan_result_area.setTabText(self.tab_scan_result_area.indexOf(self.example_scan_output_3),
+                                             QCoreApplication.translate("MainWindow", u">>", None))
+        self.label_report_name.setText(QCoreApplication.translate("MainWindow",
+                                                                  u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">Report Name</span></p></body></html>",
+                                                                  None))
+        self.label_report_desc.setText(QCoreApplication.translate("MainWindow",
+                                                                  u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">Report Description</span></p></body></html>",
+                                                                  None))
         self.dropbox_run_pair.setCurrentText(QCoreApplication.translate("MainWindow", u"Run", None))
         self.dropbox_scan_duel.setCurrentText(QCoreApplication.translate("MainWindow", u"Scan", None))
         self.button_remove_report.setText(QCoreApplication.translate("MainWindow", u"Remove", None))
-        self.label_or_2.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">OR</span></p></body></html>", None))
+        self.label_or_2.setText(QCoreApplication.translate("MainWindow",
+                                                           u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">OR</span></p></body></html>",
+                                                           None))
         self.dropbox_run_solo.setCurrentText(QCoreApplication.translate("MainWindow", u"Run", None))
         self.button_add_report.setText(QCoreApplication.translate("MainWindow", u"Add", None))
         self.button_generate_report.setText(QCoreApplication.translate("MainWindow", u"Generate", None))
         self.button_cancel_report.setText(QCoreApplication.translate("MainWindow", u"Cancel", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">XML Report</span></p></body></html>", None))
+        self.label.setText(QCoreApplication.translate("MainWindow",
+                                                      u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">XML Report</span></p></body></html>",
+                                                      None))
         self.tool_list_title.setText(QCoreApplication.translate("MainWindow", u"Tool List", None))
         ___qtablewidgetitem11 = self.tableWidget.horizontalHeaderItem(0)
         ___qtablewidgetitem11.setText(QCoreApplication.translate("MainWindow", u"Name of Tool \u21f5", None));
@@ -1028,10 +1035,12 @@ class Ui_MainWindow(object):
         self.button_option_argument_add.setText(QCoreApplication.translate("MainWindow", u"Add", None))
         self.label_output_data.setText(QCoreApplication.translate("MainWindow", u"Output Data Specification: ", None))
         self.button_output_data_add.setText(QCoreApplication.translate("MainWindow", u"Add", None))
-        self.pushbutton_export_tool_spec_file.setText(QCoreApplication.translate("MainWindow", u"Export as Tool Specification File...", None))
+        self.pushbutton_export_tool_spec_file.setText(
+            QCoreApplication.translate("MainWindow", u"Export as Tool Specification File...", None))
         self.tool_specification_OR_label.setText(QCoreApplication.translate("MainWindow", u"OR", None))
         self.tool_specification_file_input.setText("")
-        self.tool_specification_file_input.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Tool Specification File", None))
+        self.tool_specification_file_input.setPlaceholderText(
+            QCoreApplication.translate("MainWindow", u"Tool Specification File", None))
         self.tool_specification_browse_button.setText(QCoreApplication.translate("MainWindow", u"Browse", None))
         self.tool_dependency_label.setText(QCoreApplication.translate("MainWindow", u"Tool Dependency", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Dependency Expression: ", None))
@@ -1049,145 +1058,144 @@ class Ui_MainWindow(object):
         self.cancel_button.setText(QCoreApplication.translate("MainWindow", u"Cancel", None))
         self.menuSEA_Menu.setTitle(QCoreApplication.translate("MainWindow", u"SEA Menu", None))
         self.menuHelp.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))
+
     # retranslateUi
 
-
-    def actionRun_List_2_on_click(self):
+    def action_run_list_on_click(self):
         # Set to run side
         self.stacked_content_area.setCurrentIndex(0)
         # Set to run list
         self.stacked_run_content_area.setCurrentIndex(0)
 
-    def actionConfiguration_of_run_on_click(self):
+    def action_configuration_of_run_on_click(self):
         # Set to run side
         self.stacked_content_area.setCurrentIndex(0)
         # Set to run configuration
         self.stacked_run_content_area.setCurrentIndex(1)
 
-    def actionDetailed_specific_data_on_click(self):
+    def action_detailed_specific_data_on_click(self):
         # Set to run side
         self.stacked_content_area.setCurrentIndex(0)
         # Set to detailed speicic data
         self.stacked_run_content_area.setCurrentIndex(2)
 
-    def actionXML_report_area_on_click(self):
+    def action_xml_report_area_on_click(self):
         # Set to run side
         self.stacked_content_area.setCurrentIndex(0)
         # set to xml report area
         self.stacked_run_content_area.setCurrentIndex(3)
 
-    def actionTool_on_click(self):
+    def action_tool_on_click(self):
         # Set to tool side
         self.stacked_content_area.setCurrentIndex(1)
 
     def pushbutton_add_tool_on_click(self):
-        #TODO add implementation
-        pass
+        # TODO add implementation
+        print('pushbutton_add_tool_on_click')
 
     def pushbutton_delete_tool_on_click(self):
         # TODO add implementation
-        pass
+        print('pushbutton_delete_tool_on_click')
 
     def pushbutton_move_down_on_click(self):
         # TODO add implementation
-        pass
+        print('pushbutton_move_down_on_click')
 
     def pushbutton_move_up_on_click(self):
         # TODO add implementation
-        pass
+        print('pushbutton_move_up_on_click')
 
     def button_tool_path_browse_on_click(self):
         # TODO add implementation
-        pass
+        print('button_tool_path_browse_on_click')
 
     def button_option_argument_add_on_click(self):
         # TODO add implementation
-        pass
+        print('button_option_argument_add_on_click')
 
     def button_output_data_add_on_click(self):
         # TODO add implementation
-        pass
+        print('button_output_data_add_on_click')
 
     def pushbutton_export_tool_spec_file_on_click(self):
         # TODO add implementation
-        pass
+        print('pushbutton_export_tool_spec_file_on_click')
 
     def tool_specification_browse_button_on_click(self):
         # TODO add implementation
-        pass
+        print('tool_specification_browse_button_on_click')
 
     def dependency_remove_button_on_click(self):
         # TODO add implementation
-        pass
+        print('dependency_remove_button_on_click')
 
     def pushbutton_add_tool_specification_on_click(self):
         # TODO add implementation
-        pass
+        print('pushbutton_add_tool_specification_on_click')
 
     def save_button_on_click(self):
         # TODO add implementation
-        pass
+        print('save_button_on_click')
 
     def cancel_button_on_click(self):
         # TODO add implementation
-        pass
+        print('cancel_button_on_click')
 
     def button_play_detailed_run_on_click(self):
         # TODO add implementation
-        pass
+        print('button_play_detailed_run_on_click')
 
     def button_pause_detailed_run_on_click(self):
         # TODO add implementation
-        pass
+        print('button_pause_detailed_run_on_click')
 
     def button_stop_detailed_run_on_click(self):
         # TODO add implementation
-        pass
+        print('button_stop_detailed_run_on_click')
 
     def button_remove_report_on_click(self):
         # TODO add implementation
-        pass
+        print('button_remove_report_on_click')
 
     def button_add_report_on_click(self):
         # TODO add implementation
-        pass
+        print('button_add_report_on_click')
 
     def button_cancel_report_on_click(self):
         # TODO add implementation
-        pass
+        print('button_cancel_report_on_click')
 
     def button_generate_report_on_click(self):
         # TODO add implementation
-        pass
+        print('button_generate_report_on_click')
 
     def button_add_run_on_click(self):
         # TODO add implementation
-        pass
+        print('button_add_run_on_click')
 
     def button_pause_run_on_click(self):
         # TODO add implementation
-        pass
+        print('button_pause_run_on_click')
 
     def button_play_run_on_click(self):
         # TODO add implementation
-        pass
+        print('button_play_run_on_click')
 
     def button_stop_run_on_click(self):
         # TODO add implementation
-        pass
+        print('button_stop_run_on_click')
 
     def button_browse_config_file_on_click(self):
         # TODO add implementation
-        pass
+        print('button_browse_config_file_on_click')
 
     def button_save_run_config_on_click(self):
         # TODO add implementation
-        pass
+        print('button_save_run_config_on_click')
 
     def button_cancel_run_config_on_click(self):
         # TODO add implementation
-        pass
-
+        print('button_cancel_run_config_on_click')
 
 
 class ThisWindow(QMainWindow):
@@ -1196,6 +1204,7 @@ class ThisWindow(QMainWindow):
         super(ThisWindow, self).__init__()
         self.ui_main = Ui_MainWindow()
         self.ui_main.setupUi(self)
+
 
 if __name__ == '__main__':
     app = QApplication([])
