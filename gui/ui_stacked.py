@@ -15,7 +15,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QAction, QWidget, QStackedWidget, QGridLayout, QSplitter, \
     QVBoxLayout, QStatusBar, QMenu, QMenuBar, QSizePolicy, QSpacerItem, QComboBox, QLineEdit, QLabel, QFrame, \
     QPlainTextEdit, QTableWidgetItem, QTableWidget, QTabWidget, QLayout, QMainWindow, QApplication
-
+from model import tool_configuration
 
 # from model import run_config
 
@@ -1135,6 +1135,7 @@ class Ui_MainWindow(object):
 
     def save_button_on_click(self):
         # TODO add implementation
+        tool_configuration.ToolConfiguration.save_config()
         print('save_button_on_click')
 
     def cancel_button_on_click(self):

@@ -11,7 +11,7 @@ class ToolConfiguration:
     __tool_description: str
     __tool_path: str
     __tool_option_arg: tool_option_argument.ToolOptionArgument
-    __tool_output_data_specification = list[str]
+    __tool_output_data_spec: tool_data_specification.ToolDataSpecification
     __tool_dependency: tool_dependency.ToolDependency
     __scan_result: scan_result.ScanResult
 
