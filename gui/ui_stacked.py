@@ -388,20 +388,6 @@ class Ui_MainWindow(object):
         self.splitter_5.addWidget(self.layoutWidget7)
         self.tab_scan_result_area = QTabWidget(self.splitter_5)
         self.tab_scan_result_area.setObjectName(u"tab_scan_result_area")
-
-        # TODO Find out how to make a layout for the tab widgets under tab_scan_result_area
-        # TODO Set the widget to contain a text area that can be written to by programming but not by the GUI
-        # TODO Find out how to generate the tabs during runtime. This should be done through the control.
-        # TODO Learn how to start the tools and force the output to go into the non-writting area.
-        self.example_scan_output_1 = QWidget()
-        self.example_scan_output_1.setObjectName(u"example_scan_output_1")
-        self.tab_scan_result_area.addTab(self.example_scan_output_1, "")
-        self.example_scan_output_2 = QWidget()
-        self.example_scan_output_2.setObjectName(u"example_scan_output_2")
-        self.tab_scan_result_area.addTab(self.example_scan_output_2, "")
-        self.example_scan_output_3 = QWidget()
-        self.example_scan_output_3.setObjectName(u"example_scan_output_3")
-        self.tab_scan_result_area.addTab(self.example_scan_output_3, "")
         self.splitter_5.addWidget(self.tab_scan_result_area)
 
         self.gridLayout_5.addWidget(self.splitter_5, 0, 0, 1, 1)
@@ -925,6 +911,30 @@ class Ui_MainWindow(object):
 
         QMetaObject.connectSlotsByName(MainWindow)
 
+    def add_scan_tab(self, tool_name: str):
+        # TODO Find out how to make a layout for the tab widgets under tab_scan_result_area
+        # TODO Set the widget to contain a text area that can be written to by programming but not by the GUI
+        # TODO Find out how to generate the tabs during runtime. This should be done through the control.
+        # TODO Learn how to start the tools and force the output to go into the non-writting area.
+        # Refer to 396 and 1001
+        '''
+        self.add_scan_tab()
+        self.example_scan_output_1 = QWidget()
+        self.example_scan_output_1.setObjectName(u"example_scan_output_1")
+        self.tab_scan_result_area.addTab(self.example_scan_output_1, "")
+        self.example_scan_output_2 = QWidget()
+        self.example_scan_output_2.setObjectName(u"example_scan_output_2")
+        self.tab_scan_result_area.addTab(self.example_scan_output_2, "")
+        self.example_scan_output_3 = QWidget()
+        self.example_scan_output_3.setObjectName(u"example_scan_output_3")
+        self.tab_scan_result_area.addTab(self.example_scan_output_3, "")
+        :param tool_name:
+        '''
+
+        new_scan_output_tab = QWidget()
+        new_scan_output_tab.setObjectName(tool_name)
+        self.tab_scan_result_area.addTab(new_scan_output_tab)
+
     # setupUi
 
     def retranslateUi(self, MainWindow):
@@ -997,12 +1007,16 @@ class Ui_MainWindow(object):
         self.button_play_detailed_run.setText(QCoreApplication.translate("MainWindow", u"Play", None))
         self.button_pause_detailed_run.setText(QCoreApplication.translate("MainWindow", u"Pause", None))
         self.button_stop_detailed_run.setText(QCoreApplication.translate("MainWindow", u"Stop", None))
-        self.tab_scan_result_area.setTabText(self.tab_scan_result_area.indexOf(self.example_scan_output_1),
-                                             QCoreApplication.translate("MainWindow", u"Name of Scan 1", None))
-        self.tab_scan_result_area.setTabText(self.tab_scan_result_area.indexOf(self.example_scan_output_2),
-                                             QCoreApplication.translate("MainWindow", u"...", None))
-        self.tab_scan_result_area.setTabText(self.tab_scan_result_area.indexOf(self.example_scan_output_3),
-                                             QCoreApplication.translate("MainWindow", u">>", None))
+
+
+
+        # TODO we also need to update this adding text part. It needs to write the names of the tabs. It seems
+        # that the ui doesn't need to be "refreshed" as it should update on its own.
+        '''
+        There perhaps should be a method to call so that it may update the text of the tab that was just created.
+        '''
+        self.update_tab_text()
+
         self.label_report_name.setText(QCoreApplication.translate("MainWindow",
                                                                   u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">Report Name</span></p></body></html>",
                                                                   None))
@@ -1063,6 +1077,19 @@ class Ui_MainWindow(object):
         self.cancel_button.setText(QCoreApplication.translate("MainWindow", u"Cancel", None))
         self.menuSEA_Menu.setTitle(QCoreApplication.translate("MainWindow", u"SEA Menu", None))
         self.menuHelp.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))
+
+    def update_tab_text(self):
+        """
+        Responsible for updating the tabs. Maybe a data structure that adding tabs method may also call.
+        TODO
+        :return:
+        """
+        self.tab_scan_result_area.setTabText(self.tab_scan_result_area.indexOf(self.example_scan_output_1),
+                                             QCoreApplication.translate("MainWindow", u"Name of Scan 1", None))
+        self.tab_scan_result_area.setTabText(self.tab_scan_result_area.indexOf(self.example_scan_output_2),
+                                             QCoreApplication.translate("MainWindow", u"...", None))
+        self.tab_scan_result_area.setTabText(self.tab_scan_result_area.indexOf(self.example_scan_output_3),
+                                             QCoreApplication.translate("MainWindow", u">>", None))
 
     # retranslateUi
 
