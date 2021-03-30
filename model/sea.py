@@ -1,13 +1,16 @@
-class SEA:
+from control import control
+import threading
+
+
+class SEA(threading.Thread):
     """
     There is a need for global attributes and responsibilities. This might be the main method.
     Can change.
     """
+    __controller: control.Controller
 
-    def __init__(self, gui, model, control):
-        self.view = gui
-        self.model = model
-        self.control = control
+    def __init__(self):
+        threading.Thread.__init__()
 
 
     def generate_execute_run_request(self, run_config):
@@ -48,4 +51,15 @@ class SEA:
         :param run_config:
         :return:
         """
+        pass
+
+    def set_controller(self, controller: control.Controller):
+        self.__controller = controller
+
+    def run(self):
+        #TODO do implementation
+        pass
+
+    def start(self):
+        #TODO do implementation
         pass

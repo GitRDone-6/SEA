@@ -25,14 +25,16 @@ class Connect:
 
 
     def tool_specification_save(self, tool_config: tool_configuration.ToolConfiguration):
+        pass
         collection = 'TOOL CONFIGURATION'
         initial_ = {'tool name': tool_config.tool_name(), 'tool description': tool_config.tool_description(),
                     'tool path': tool_config.tool_path()}
         # Get initial_'s id and store it to the next piece
         initial_id = self.__write(initial_)
-        tool_option_and_argument = {_id: initial_id, 'tool option and argument'}
+        #tool_option_and_argument = {_id: initial_id, 'tool option and argument'} comment for running the gui
 
     def scan_config_save(self):
-
+        pass
 
     def read(self):
+        pass

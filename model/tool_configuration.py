@@ -46,7 +46,7 @@ class ToolConfiguration:
         return self.__scan_result
 
     def set_tool_dependency(self, dependency):
-        return self.__tool_dependency = dependency
+        self.__tool_dependency = dependency
 
     def tool_dependency(self) -> tool_dependency.ToolDependency:
         return self.__tool_dependency
