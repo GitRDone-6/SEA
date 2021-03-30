@@ -1,4 +1,6 @@
 from control import control
+from db import connect
+import run_configuration
 import threading
 
 
@@ -8,6 +10,9 @@ class SEA(threading.Thread):
     Can change.
     """
     __controller: control.Controller
+    __active_run_config: run_configuration.RunConfiguration
+    __run_config_list: list[run_configuration.RunConfiguration]
+
 
     def __init__(self):
         threading.Thread.__init__()
