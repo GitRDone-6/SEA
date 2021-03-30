@@ -388,6 +388,11 @@ class Ui_MainWindow(object):
         self.splitter_5.addWidget(self.layoutWidget7)
         self.tab_scan_result_area = QTabWidget(self.splitter_5)
         self.tab_scan_result_area.setObjectName(u"tab_scan_result_area")
+
+        # TODO Find out how to make a layout for the tab widgets under tab_scan_result_area
+        # TODO Set the widget to contain a text area that can be written to by programming but not by the GUI
+        # TODO Find out how to generate the tabs during runtime. This should be done through the control.
+        # TODO Learn how to start the tools and force the output to go into the non-writting area.
         self.example_scan_output_1 = QWidget()
         self.example_scan_output_1.setObjectName(u"example_scan_output_1")
         self.tab_scan_result_area.addTab(self.example_scan_output_1, "")

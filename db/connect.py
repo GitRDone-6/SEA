@@ -32,5 +32,7 @@ class Connect:
         initial_id = self.__write(initial_)
         tool_option_and_argument = {_id: initial_id, 'tool option and argument'}
 
+    def scan_config_save(self):
+
 
     def read(self):
