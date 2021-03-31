@@ -1,9 +1,12 @@
 from gui import ui_stacked
+import threading
 
-class Controller:
+class Controller(threading.Thread):
 
-    def __init__(self, view: ui_stacked.Ui_MainWindow):
-        self.__view = view
+    __gui: ui_stacked.Ui_MainWindow
+
+    def __init__(self):
+        pass
 
 
 
@@ -29,3 +32,6 @@ class Controller:
         self.example_scan_output_3 = QWidget()
         self.example_scan_output_3.setObjectName(u"example_scan_output_3")
         self.tab_scan_result_area.addTab(self.example_scan_output_3, "")
+
+    def set_gui(self, gui: ui_stacked.Ui_MainWindow):
+        self.__gui = gui

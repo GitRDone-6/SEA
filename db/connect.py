@@ -23,9 +23,9 @@ class Connect:
         object_id = self.current_collection.insert_one(record)
         return str(object_id)
 
-
     def save_(self, tool_dict: dict[str:str], collection: str):
         #TODO Implementation
         pass
 
     def read(self):
+        pass

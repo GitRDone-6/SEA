@@ -15,7 +15,8 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QAction, QWidget, QStackedWidget, QGridLayout, QSplitter, \
     QVBoxLayout, QStatusBar, QMenu, QMenuBar, QSizePolicy, QSpacerItem, QComboBox, QLineEdit, QLabel, QFrame, \
     QPlainTextEdit, QTableWidgetItem, QTableWidget, QTabWidget, QLayout, QMainWindow, QApplication
-from model import tool_configuration
+from model import tool_configuration, sea
+import threading
 
 # from model import run_config
 
@@ -24,7 +25,10 @@ from model import tool_configuration
 # from PySide2.QtWidgets import *
 
 
-class Ui_MainWindow(object):
+class Ui_MainWindow(object, threading.Thread):
+
+    __model: sea.SEA
+
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
@@ -1229,6 +1233,19 @@ class Ui_MainWindow(object):
     def button_cancel_run_config_on_click(self):
         # TODO add implementation
         print('button_cancel_run_config_on_click')
+
+    def set_model(self, mod: sea.SEA):
+        self.__model = mod
+        pass
+
+    def run(self):
+        pass
+
+    def start(self):
+        app = QApplication([])
+        application = ThisWindow()
+        application.show()
+        sys.exit(app.exec())
 
 
 class ThisWindow(QMainWindow):
