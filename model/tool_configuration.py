@@ -1,5 +1,5 @@
 from db import connect
-from model import tool_option_argument, scan_result, tool_dependency
+from model import tool_option_argument, scan_result, tool_dependency, tool_data_specification
 
 
 class ToolConfiguration:
@@ -17,6 +17,10 @@ class ToolConfiguration:
 
     def __init__(self):
         pass
+
+    def save_(self, datab: connect.Connect, collection: str):
+        tool_dictionary: dict[str,str] = self.__to_dict()
+        datab.save_(tool_dictionary, collection)
 
     def set_name(self, name):
         self.__tool_name = name
@@ -50,3 +54,7 @@ class ToolConfiguration:
 
     def tool_dependency(self) -> tool_dependency.ToolDependency:
         return self.__tool_dependency
+
+    def __to_dict(self) -> dict[str,str]:
+        #TODO implementation
+        pass
