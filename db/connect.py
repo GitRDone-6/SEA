@@ -23,7 +23,13 @@ class Connect:
         object_id = self.current_collection.insert_one(record)
         return str(object_id)
 
-    def save_(self, tool_dict: dict[str:str], collection: str):
+    def save_(self, data_dict: dict[str:str], collection: str) -> str:
+        """
+        Save the data dictionary into the collection specified. It will also return the unique ID
+        :param data_dict: 
+        :param collection: 
+        :return: 
+        """
         #TODO Implementation
         pass
 

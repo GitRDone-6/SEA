@@ -15,7 +15,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QAction, QWidget, QStackedWidget, QGridLayout, QSplitter, \
     QVBoxLayout, QStatusBar, QMenu, QMenuBar, QSizePolicy, QSpacerItem, QComboBox, QLineEdit, QLabel, QFrame, \
     QPlainTextEdit, QTableWidgetItem, QTableWidget, QTabWidget, QLayout, QMainWindow, QApplication
-from model import tool_configuration, sea
+#from model import tool_configuration, sea
 import threading
 
 # from model import run_config
@@ -25,9 +25,9 @@ import threading
 # from PySide2.QtWidgets import *
 
 
-class Ui_MainWindow(object, threading.Thread):
+class Ui_MainWindow(object):
 
-    __model: sea.SEA
+#    __model: sea.SEA
 
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
@@ -1087,13 +1087,14 @@ class Ui_MainWindow(object, threading.Thread):
         Responsible for updating the tabs. Maybe a data structure that adding tabs method may also call.
         TODO
         :return:
-        """
         self.tab_scan_result_area.setTabText(self.tab_scan_result_area.indexOf(self.example_scan_output_1),
                                              QCoreApplication.translate("MainWindow", u"Name of Scan 1", None))
         self.tab_scan_result_area.setTabText(self.tab_scan_result_area.indexOf(self.example_scan_output_2),
                                              QCoreApplication.translate("MainWindow", u"...", None))
         self.tab_scan_result_area.setTabText(self.tab_scan_result_area.indexOf(self.example_scan_output_3),
                                              QCoreApplication.translate("MainWindow", u">>", None))
+        """
+
 
     # retranslateUi
 
@@ -1171,7 +1172,7 @@ class Ui_MainWindow(object, threading.Thread):
 
     def save_button_on_click(self):
         # TODO add implementation
-        tool_configuration.ToolConfiguration.save_config()
+        #tool_configuration.ToolConfiguration.save_config()
         print('save_button_on_click')
 
     def cancel_button_on_click(self):
@@ -1234,9 +1235,11 @@ class Ui_MainWindow(object, threading.Thread):
         # TODO add implementation
         print('button_cancel_run_config_on_click')
 
+    '''
     def set_model(self, mod: sea.SEA):
         self.__model = mod
         pass
+    '''
 
     def run(self):
         pass
