@@ -111,6 +111,10 @@ class Ui_MainWindow(object):
         self.table_run_list.verticalHeader().setStretchLastSection(False)
         self.verticalLayout.addWidget(self.table_run_list)
         '''
+        Need to populate the list with all of the saved runs from the database
+        '''
+        self.update_table_run_list()
+        '''
         Run list table ends
         '''
 
@@ -1251,14 +1255,26 @@ class Ui_MainWindow(object):
         print('button_add_run_on_click')
 
     def button_pause_run_on_click(self):
+        """
+        Send message to the run config to pause.
+        :return:
+        """
         # TODO add implementation
         print('button_pause_run_on_click')
 
     def button_play_run_on_click(self):
+        """
+        Send message to the run config to play.
+        :return:
+        """
         # TODO add implementation
         print('button_play_run_on_click')
 
     def button_stop_run_on_click(self):
+        """
+        Send message to the run config to stop/terminate.
+        :return:
+        """
         # TODO add implementation
         print('button_stop_run_on_click')
 
@@ -1288,6 +1304,15 @@ class Ui_MainWindow(object):
         application = ThisWindow()
         application.show()
         sys.exit(app.exec())
+
+    def update_table_run_list(self):
+        """
+        Updates the run config items.
+        TODO implementation. Needs to communicate with the model piece in order to draw these things.
+        :param self:
+        :return:
+        """
+        pass
 
 
 class ThisWindow(QMainWindow):
