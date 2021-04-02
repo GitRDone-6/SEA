@@ -86,7 +86,9 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
 
-
+        '''
+        Run list table starts
+        '''
         self.table_run_list = QTableWidget(self.layoutWidget)
         if (self.table_run_list.columnCount() < 4):
             self.table_run_list.setColumnCount(4)
@@ -99,15 +101,18 @@ class Ui_MainWindow(object):
         __qtablewidgetitem3 = QTableWidgetItem()
         self.table_run_list.setHorizontalHeaderItem(3, __qtablewidgetitem3)
         self.table_run_list.setObjectName(u"table_run_list")
-        self.table_run_list.horizontalHeader().setVisible(False)
+        self.table_run_list.horizontalHeader().setVisible(True)
         self.table_run_list.horizontalHeader().setCascadingSectionResizes(True)
         self.table_run_list.horizontalHeader().setDefaultSectionSize(200)
         self.table_run_list.horizontalHeader().setProperty("showSortIndicator", True)
         self.table_run_list.horizontalHeader().setStretchLastSection(True)
+        self.table_run_list.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.table_run_list.verticalHeader().setProperty("showSortIndicator", False)
         self.table_run_list.verticalHeader().setStretchLastSection(False)
-
         self.verticalLayout.addWidget(self.table_run_list)
+        '''
+        Run list table ends
+        '''
 
         self.button_add_run = QPushButton(self.layoutWidget)
         self.button_add_run.setObjectName(u"button_add_run")
@@ -339,6 +344,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_9.setObjectName(u"verticalLayout_9")
         self.verticalLayout_9.setSizeConstraint(QLayout.SetMinAndMaxSize)
         self.verticalLayout_9.setContentsMargins(0, 0, 0, 0)
+
+        '''
+                Run list table starts
+                '''
         self.table_statistical_data = QTableWidget(self.layoutWidget7)
         if (self.table_statistical_data.columnCount() < 7):
             self.table_statistical_data.setColumnCount(7)
@@ -357,8 +366,6 @@ class Ui_MainWindow(object):
         __qtablewidgetitem10 = QTableWidgetItem()
         self.table_statistical_data.setHorizontalHeaderItem(6, __qtablewidgetitem10)
         self.table_statistical_data.setObjectName(u"table_statistical_data")
-
-
         sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
@@ -369,8 +376,11 @@ class Ui_MainWindow(object):
         self.table_statistical_data.horizontalHeader().setDefaultSectionSize(130)
         self.table_statistical_data.horizontalHeader().setProperty("showSortIndicator", True)
         self.table_statistical_data.horizontalHeader().setStretchLastSection(True)
-
         self.verticalLayout_9.addWidget(self.table_statistical_data)
+        '''
+        Run list table ends
+        '''
+
 
         self.horizontalLayout_7 = QHBoxLayout()
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
@@ -964,6 +974,11 @@ class Ui_MainWindow(object):
         self.action_detailed_specific_data.setText(
             QCoreApplication.translate("MainWindow", u"Detailed Statistical Data", None))
         self.action_xml_report_area.setText(QCoreApplication.translate("MainWindow", u"XML Report", None))
+
+
+        '''
+        Run List table text starts here.
+        '''
         ___qtablewidgetitem = self.table_run_list.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Name of Run \u21f5", None));
         ___qtablewidgetitem1 = self.table_run_list.horizontalHeaderItem(1)
@@ -971,6 +986,10 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem2 = self.table_run_list.horizontalHeaderItem(2)
         ___qtablewidgetitem2.setText(QCoreApplication.translate("MainWindow", u"Result with Timestamp", None));
         ___qtablewidgetitem3 = self.table_run_list.horizontalHeaderItem(3)
+
+
+
+
         ___qtablewidgetitem3.setText(QCoreApplication.translate("MainWindow", u"Control Status", None));
         self.button_add_run.setText(QCoreApplication.translate("MainWindow", u"Add", None))
         self.button_play_run.setText(QCoreApplication.translate("MainWindow", u"Play", None))
@@ -1003,6 +1022,11 @@ class Ui_MainWindow(object):
         self.label_4.setText(QCoreApplication.translate("MainWindow",
                                                         u"<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600;\">Configuration of the Selected Run</span></p></body></html>",
                                                         None))
+
+
+        '''
+        Statistical Data table gets its header text here.
+        '''
         ___qtablewidgetitem4 = self.table_statistical_data.horizontalHeaderItem(0)
         ___qtablewidgetitem4.setText(QCoreApplication.translate("MainWindow", u"Name of Scan \u21f5", None));
         ___qtablewidgetitem5 = self.table_statistical_data.horizontalHeaderItem(1)
@@ -1016,6 +1040,9 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem9 = self.table_statistical_data.horizontalHeaderItem(5)
         ___qtablewidgetitem9.setText(QCoreApplication.translate("MainWindow", u"Successful Execution/Failure", None));
         ___qtablewidgetitem10 = self.table_statistical_data.horizontalHeaderItem(6)
+
+
+
         ___qtablewidgetitem10.setText(QCoreApplication.translate("MainWindow", u"Control Status", None));
         self.button_play_detailed_run.setText(QCoreApplication.translate("MainWindow", u"Play", None))
         self.button_pause_detailed_run.setText(QCoreApplication.translate("MainWindow", u"Pause", None))

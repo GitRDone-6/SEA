@@ -7,7 +7,7 @@ class Connect:
     Our database class
     """
 
-    DB = 'SEA'
+    DB: str = 'SEA'
 
     def __init__(self):
         # Global variable
@@ -19,7 +19,7 @@ class Connect:
         self.current_collection = self.current_db[collection]
 
 
-    def __write(self, record) -> str:
+    def __write(self, record: str) -> str:
         object_id = self.current_collection.insert_one(record)
         return str(object_id)
 
