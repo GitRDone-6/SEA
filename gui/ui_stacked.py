@@ -324,7 +324,6 @@ class Ui_MainWindow(object):
         self.label_4.setObjectName(u"label_4")
 
         self.gridLayout_2.addWidget(self.label_4, 0, 0, 1, 1)
-
         self.stacked_run_content_area.addWidget(self.configuration_run_area)
         self.detailed_run_area = QWidget()
         self.detailed_run_area.setObjectName(u"detailed_run_area")
@@ -339,6 +338,12 @@ class Ui_MainWindow(object):
         self.verticalLayout_9.setObjectName(u"verticalLayout_9")
         self.verticalLayout_9.setSizeConstraint(QLayout.SetMinAndMaxSize)
         self.verticalLayout_9.setContentsMargins(0, 0, 0, 0)
+
+
+
+        '''
+        Statistical Data Table start
+        '''
         self.table_statistical_data = QTableWidget(self.layoutWidget7)
         if (self.table_statistical_data.columnCount() < 7):
             self.table_statistical_data.setColumnCount(7)
@@ -357,8 +362,6 @@ class Ui_MainWindow(object):
         __qtablewidgetitem10 = QTableWidgetItem()
         self.table_statistical_data.setHorizontalHeaderItem(6, __qtablewidgetitem10)
         self.table_statistical_data.setObjectName(u"table_statistical_data")
-
-
         sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
@@ -369,8 +372,12 @@ class Ui_MainWindow(object):
         self.table_statistical_data.horizontalHeader().setDefaultSectionSize(130)
         self.table_statistical_data.horizontalHeader().setProperty("showSortIndicator", True)
         self.table_statistical_data.horizontalHeader().setStretchLastSection(True)
-
         self.verticalLayout_9.addWidget(self.table_statistical_data)
+        '''
+        Statistical Data Table end
+        '''
+
+
 
         self.horizontalLayout_7 = QHBoxLayout()
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
