@@ -68,6 +68,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.stacked_run_content_area = QStackedWidget(self.run_content_area)
         self.stacked_run_content_area.setObjectName(u"stacked_run_content_area")
+
+        '''
+        From this point most of the widgets we care about are below.
+        '''
+
         self.run_list_area = QWidget()
         self.run_list_area.setObjectName(u"run_list_area")
         self.gridLayout = QGridLayout(self.run_list_area)
@@ -80,6 +85,8 @@ class Ui_MainWindow(object):
         self.verticalLayout = QVBoxLayout(self.layoutWidget)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+
+
         self.table_run_list = QTableWidget(self.layoutWidget)
         if (self.table_run_list.columnCount() < 4):
             self.table_run_list.setColumnCount(4)
@@ -350,6 +357,8 @@ class Ui_MainWindow(object):
         __qtablewidgetitem10 = QTableWidgetItem()
         self.table_statistical_data.setHorizontalHeaderItem(6, __qtablewidgetitem10)
         self.table_statistical_data.setObjectName(u"table_statistical_data")
+
+
         sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
@@ -1021,6 +1030,9 @@ class Ui_MainWindow(object):
         '''
         self.update_tab_text()
 
+
+
+
         self.label_report_name.setText(QCoreApplication.translate("MainWindow",
                                                                   u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">Report Name</span></p></body></html>",
                                                                   None))
@@ -1085,7 +1097,7 @@ class Ui_MainWindow(object):
     def update_tab_text(self):
         """
         Responsible for updating the tabs. Maybe a data structure that adding tabs method may also call.
-        TODO
+        TODO This should be callable from the control so that it may update with the scans.
         :return:
         self.tab_scan_result_area.setTabText(self.tab_scan_result_area.indexOf(self.example_scan_output_1),
                                              QCoreApplication.translate("MainWindow", u"Name of Scan 1", None))
