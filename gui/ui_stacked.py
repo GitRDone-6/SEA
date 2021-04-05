@@ -28,6 +28,8 @@ import threading
 class Ui_MainWindow(object):
 
 #    __model: sea.SEA
+    __came_from_run_list: bool = False
+
 
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
@@ -1251,7 +1253,12 @@ class Ui_MainWindow(object):
         print('button_generate_report_on_click')
 
     def button_add_run_on_click(self):
-        # TODO add implementation
+        """
+        As discussed w/ stakeholders, this method should change the page to the run config to setup a new run.
+        :return:
+        """
+        self.action_configuration_of_run_on_click()
+        self.__came_from_run_list = True
         print('button_add_run_on_click')
 
     def button_pause_run_on_click(self):
@@ -1283,7 +1290,15 @@ class Ui_MainWindow(object):
         print('button_browse_config_file_on_click')
 
     def button_save_run_config_on_click(self):
-        # TODO add implementation
+        """
+        This should save the config. But there are two cases: If the user came from the run list and used the add button
+        , it should also return them to run list. otherwise it may stay there.
+        :return:
+        """
+        #TODO Needs save implementation
+        if self.__came_from_run_list:
+            self.__came_from_run_list = False
+            self.action_run_list_on_click()
         print('button_save_run_config_on_click')
 
     def button_cancel_run_config_on_click(self):
