@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import pprint
 ################################################################################
 ## Form generated from reading UI file 'stackediSjcyw.ui'
 ##
@@ -14,9 +15,15 @@ from PyQt5.QtCore import QCoreApplication, QMetaObject, QRect, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QAction, QWidget, QStackedWidget, QGridLayout, QSplitter, \
     QVBoxLayout, QStatusBar, QMenu, QMenuBar, QSizePolicy, QSpacerItem, QComboBox, QLineEdit, QLabel, QFrame, \
-    QPlainTextEdit, QTableWidgetItem, QTableWidget, QTabWidget, QLayout, QMainWindow, QApplication
-#from model import tool_configuration, sea
-import threading
+    QPlainTextEdit, QTableWidgetItem, QTableWidget, QTabWidget, QLayout, QMainWindow, QApplication, QInputDialog, \
+    QFileDialog
+
+from db.connect import Connect
+from model.tool_configuration import ToolConfiguration
+from xml.etree.ElementTree import Element
+
+
+#import threading
 
 # from model import run_config
 
@@ -1162,8 +1169,26 @@ class Ui_MainWindow(object):
         print('pushbutton_move_up_on_click')
 
     def button_tool_path_browse_on_click(self):
-        # TODO add implementation
+        # sets path chosen into line edit text box
+        path = self.browse_directory()
+        self.lineedit_tool_path.setText(path)
         print('button_tool_path_browse_on_click')
+
+    def openSaveDialog(self):
+        option = QFileDialog.Options()
+        file_path = QFileDialog.getSaveFileName(None, "Save File",
+                                                "Tool_Configuration.xml",
+                                                "XML Files (*.xml)",
+                                                options=option)
+        return file_path
+
+    def dict_to_xml(self, tag, dictionary):
+        elem = Element(tag)
+        for key, val in dictionary.items():
+            child = Element(key)
+            child.text = str(val)
+            elem.append(child)
+        return elem
 
     def button_option_argument_add_on_click(self):
         # TODO add implementation
@@ -1175,11 +1200,22 @@ class Ui_MainWindow(object):
 
     def pushbutton_export_tool_spec_file_on_click(self):
         # TODO add implementation
+        path = self.openSaveDialog()
+        print(path)
         print('pushbutton_export_tool_spec_file_on_click')
 
     def tool_specification_browse_button_on_click(self):
-        # TODO add implementation
+        # sets path chosen into line edit text box
+        path = self.browse_file()
+        self.tool_specification_file_input.setText(path)
         print('tool_specification_browse_button_on_click')
+
+    def browse_file(self, file_option = 'Single File', file_extension = '*.xml'):
+        file_path, _ = QFileDialog.getOpenFileName(None, file_option, '', file_extension)
+        return file_path
+
+    def browse_directory(self):
+        return QFileDialog.getExistingDirectory(None, 'Select Directory')
 
     def dependency_remove_button_on_click(self):
         # TODO add implementation
@@ -1192,10 +1228,36 @@ class Ui_MainWindow(object):
     def save_button_on_click(self):
         # TODO add implementation
         #tool_configuration.ToolConfiguration.save_config()
+        tool = ToolConfiguration()
+        tool.set_name(self.lineedit_tool_name.text())
+        tool.set_description(self.plaintextedit_tool_description.toPlainText())
+        tool.set_path(self.lineedit_tool_path.text())
+        tool.set_option_arg(self.tool_option_argument())
+        tool.set_output_data_spec(self.tool_output_data_spec())
+
+        #record Tool information to db
+        record = tool.to_dict()
+        db_connection = Connect()
+        record_id = db_connection.save_data(record, 'TOOL')
+        print(record_id)
+        old_record = db_connection.retrieve_data(record_id, 'TOOL')
+        pprint.pprint(old_record)
+        # TODO add PATH def
         print('save_button_on_click')
 
+    def tool_option_argument(self):
+        return self.plaintextedit_tool_option_argument.toPlainText().splitlines()
+
+    def tool_output_data_spec(self):
+        return self.plaintextedit_tool_data_specification.toPlainText().splitlines()
+
     def cancel_button_on_click(self):
-        # TODO add implementation
+        # TODO add implementation for tool dependency
+        self.lineedit_tool_name.clear()
+        self.plaintextedit_tool_description.clear()
+        self.lineedit_tool_path.clear()
+        self.plaintextedit_tool_option_argument.clear()
+        self.plaintextedit_tool_data_specification.clear()
         print('cancel_button_on_click')
 
     def button_play_detailed_run_on_click(self):

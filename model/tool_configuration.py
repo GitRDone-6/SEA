@@ -1,5 +1,4 @@
-from db import connect
-from model import tool_option_argument, scan_result, tool_dependency, tool_data_specification
+import copy
 
 
 class ToolConfiguration:
@@ -7,20 +6,21 @@ class ToolConfiguration:
     Sets the configuration settings for a tool
     """
 
+    __tool_record_id : str
     __tool_name: str
     __tool_description: str
     __tool_path: str
-    __tool_option_arg: tool_option_argument.ToolOptionArgument
-    __tool_output_data_spec: tool_data_specification.ToolDataSpecification
-    __tool_dependency: tool_dependency.ToolDependency
-    __scan_result: scan_result.ScanResult
+    __tool_option_arg: []
+    __tool_output_data_spec: []
 
     def __init__(self):
         pass
 
-    def save_(self, datab: connect.Connect, collection: str):
-        tool_dictionary: dict[str,str] = self.__to_dict()
-        datab.save_(tool_dictionary, collection)
+    def set_tool_record_id(self, record_id):
+        self.__tool_record_id = record_id
+
+    def tool_record_id(self):
+        return self.__tool_record_id
 
     def set_name(self, name):
         self.__tool_name = name
@@ -43,18 +43,23 @@ class ToolConfiguration:
     def set_option_arg(self, option_arg):
         self.__tool_option_arg = option_arg
 
-    def tool_option_arg(self) -> tool_option_argument.ToolOptionArgument:
-        return self.__tool_option_arg
+    def tool_option_arg(self) -> list:
+        return copy.deepcopy(self.__tool_option_arg)
 
+    def set_output_data_spec(self, output_data_spec):
+        self.__tool_output_data_spec = output_data_spec
+
+    def tool_output_data_spec(self) -> list:
+        return copy.deepcopy(self.__tool_output_data_spec)
+
+    ''' # (BRE) I personally feel this shouldn't be here??
     def scan_results(self) -> scan_result.ScanResult:
         return self.__scan_result
+    '''
 
-    def set_tool_dependency(self, dependency):
-        self.__tool_dependency = dependency
-
-    def tool_dependency(self) -> tool_dependency.ToolDependency:
-        return self.__tool_dependency
-
-    def __to_dict(self) -> dict[str,str]:
-        #TODO implementation
-        pass
+    def to_dict(self):
+        return {"Tool Name" : self.tool_name(),
+                "Tool Description" : self.tool_description(),
+                "Tool Path" : self.tool_path(),
+                "Option Argument" : self.tool_option_arg(),
+                "Output Data Specification" : self.tool_output_data_spec()}
