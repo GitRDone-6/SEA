@@ -1,37 +1,29 @@
-from model import tool_configuration
 import pymongo
-
+from bson.objectid import ObjectId
 
 class Connect:
     """
     Our database class
     """
 
-    DB = 'SEA'
-
     def __init__(self):
         # Global variable
         # Connect to default mongo localhost: 27017
-        _client = pymongo.MongoClient()
-        self.db = db
-        self.collection = collection
-        self.current_db = self._client[db]
-        self.current_collection = self.current_db[collection]
+        self.client = pymongo.MongoClient()
+        self.db = 'SEA'
+        self.current_db = self.client[self.db]
 
-
-    def __write(self, record) -> str:
-        object_id = self.current_collection.insert_one(record)
+    def save_data(self, record, collection) -> str:
+        current_collection = self.current_db[collection]
+        record = current_collection.insert_one(record)
+        object_id = record.inserted_id
         return str(object_id)
 
-    def save_(self, data_dict: dict[str:str], collection: str) -> str:
-        """
-        Save the data dictionary into the collection specified. It will also return the unique ID
-        :param data_dict: 
-        :param collection: 
-        :return: 
-        """
-        #TODO Implementation
-        pass
+    def retrieve_data(self, record_id, collection):
+        current_collection = self.current_db[collection]
+        query = {'_id' : ObjectId(record_id)}
+        record = current_collection.find_one(query)
+        return record
 
-    def read(self):
-        pass
+    def retrieve_collection(self, collection, expression = ''):
+        return self.current_db[collection].find() if expression == '' else self.current_db[collection].find(expression)
