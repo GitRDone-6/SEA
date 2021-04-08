@@ -35,6 +35,8 @@ from xml.etree.ElementTree import Element
 class Ui_MainWindow(object):
 
 #    __model: sea.SEA
+    __came_from_run_list: bool = False
+
 
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
@@ -93,7 +95,9 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
 
-
+        '''
+        Run list table starts
+        '''
         self.table_run_list = QTableWidget(self.layoutWidget)
         if (self.table_run_list.columnCount() < 4):
             self.table_run_list.setColumnCount(4)
@@ -106,15 +110,22 @@ class Ui_MainWindow(object):
         __qtablewidgetitem3 = QTableWidgetItem()
         self.table_run_list.setHorizontalHeaderItem(3, __qtablewidgetitem3)
         self.table_run_list.setObjectName(u"table_run_list")
-        self.table_run_list.horizontalHeader().setVisible(False)
+        self.table_run_list.horizontalHeader().setVisible(True)
         self.table_run_list.horizontalHeader().setCascadingSectionResizes(True)
         self.table_run_list.horizontalHeader().setDefaultSectionSize(200)
         self.table_run_list.horizontalHeader().setProperty("showSortIndicator", True)
         self.table_run_list.horizontalHeader().setStretchLastSection(True)
+        self.table_run_list.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.table_run_list.verticalHeader().setProperty("showSortIndicator", False)
         self.table_run_list.verticalHeader().setStretchLastSection(False)
-
         self.verticalLayout.addWidget(self.table_run_list)
+        '''
+        Need to populate the list with all of the saved runs from the database
+        '''
+        self.update_table_run_list()
+        '''
+        Run list table ends
+        '''
 
         self.button_add_run = QPushButton(self.layoutWidget)
         self.button_add_run.setObjectName(u"button_add_run")
@@ -347,7 +358,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_9.setContentsMargins(0, 0, 0, 0)
 
 
-
         '''
         Statistical Data Table start
         '''
@@ -380,11 +390,10 @@ class Ui_MainWindow(object):
         self.table_statistical_data.horizontalHeader().setProperty("showSortIndicator", True)
         self.table_statistical_data.horizontalHeader().setStretchLastSection(True)
         self.verticalLayout_9.addWidget(self.table_statistical_data)
+
         '''
         Statistical Data Table end
         '''
-
-
 
         self.horizontalLayout_7 = QHBoxLayout()
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
@@ -978,6 +987,11 @@ class Ui_MainWindow(object):
         self.action_detailed_specific_data.setText(
             QCoreApplication.translate("MainWindow", u"Detailed Statistical Data", None))
         self.action_xml_report_area.setText(QCoreApplication.translate("MainWindow", u"XML Report", None))
+
+
+        '''
+        Run List table text starts here.
+        '''
         ___qtablewidgetitem = self.table_run_list.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Name of Run \u21f5", None));
         ___qtablewidgetitem1 = self.table_run_list.horizontalHeaderItem(1)
@@ -985,6 +999,10 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem2 = self.table_run_list.horizontalHeaderItem(2)
         ___qtablewidgetitem2.setText(QCoreApplication.translate("MainWindow", u"Result with Timestamp", None));
         ___qtablewidgetitem3 = self.table_run_list.horizontalHeaderItem(3)
+
+
+
+
         ___qtablewidgetitem3.setText(QCoreApplication.translate("MainWindow", u"Control Status", None));
         self.button_add_run.setText(QCoreApplication.translate("MainWindow", u"Add", None))
         self.button_play_run.setText(QCoreApplication.translate("MainWindow", u"Play", None))
@@ -1017,6 +1035,11 @@ class Ui_MainWindow(object):
         self.label_4.setText(QCoreApplication.translate("MainWindow",
                                                         u"<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600;\">Configuration of the Selected Run</span></p></body></html>",
                                                         None))
+
+
+        '''
+        Statistical Data table gets its header text here.
+        '''
         ___qtablewidgetitem4 = self.table_statistical_data.horizontalHeaderItem(0)
         ___qtablewidgetitem4.setText(QCoreApplication.translate("MainWindow", u"Name of Scan \u21f5", None));
         ___qtablewidgetitem5 = self.table_statistical_data.horizontalHeaderItem(1)
@@ -1030,6 +1053,9 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem9 = self.table_statistical_data.horizontalHeaderItem(5)
         ___qtablewidgetitem9.setText(QCoreApplication.translate("MainWindow", u"Successful Execution/Failure", None));
         ___qtablewidgetitem10 = self.table_statistical_data.horizontalHeaderItem(6)
+
+
+
         ___qtablewidgetitem10.setText(QCoreApplication.translate("MainWindow", u"Control Status", None));
         self.button_play_detailed_run.setText(QCoreApplication.translate("MainWindow", u"Play", None))
         self.button_pause_detailed_run.setText(QCoreApplication.translate("MainWindow", u"Pause", None))
@@ -1289,18 +1315,35 @@ class Ui_MainWindow(object):
         print('button_generate_report_on_click')
 
     def button_add_run_on_click(self):
-        # TODO add implementation
+        """
+        As discussed w/ stakeholders, this method should change the page to the run config to setup a new run.
+        :return:
+        """
+        self.action_configuration_of_run_on_click()
+        self.__came_from_run_list = True
         print('button_add_run_on_click')
 
     def button_pause_run_on_click(self):
+        """
+        Send message to the run config to pause.
+        :return:
+        """
         # TODO add implementation
         print('button_pause_run_on_click')
 
     def button_play_run_on_click(self):
+        """
+        Send message to the run config to play.
+        :return:
+        """
         # TODO add implementation
         print('button_play_run_on_click')
 
     def button_stop_run_on_click(self):
+        """
+        Send message to the run config to stop/terminate.
+        :return:
+        """
         # TODO add implementation
         print('button_stop_run_on_click')
 
@@ -1309,11 +1352,22 @@ class Ui_MainWindow(object):
         print('button_browse_config_file_on_click')
 
     def button_save_run_config_on_click(self):
-        # TODO add implementation
+        """
+        This should save the config. But there are two cases: If the user came from the run list and used the add button
+        , it should also return them to run list. otherwise it may stay there.
+        :return:
+        """
+        #TODO Needs save implementation
+        if self.__came_from_run_list:
+            self.__came_from_run_list = False
+            self.action_run_list_on_click()
         print('button_save_run_config_on_click')
 
     def button_cancel_run_config_on_click(self):
         # TODO add implementation
+        if self.__came_from_run_list:
+            self.__came_from_run_list = False
+            self.action_run_list_on_click()
         print('button_cancel_run_config_on_click')
 
     '''
@@ -1330,6 +1384,15 @@ class Ui_MainWindow(object):
         application = ThisWindow()
         application.show()
         sys.exit(app.exec())
+
+    def update_table_run_list(self):
+        """
+        Updates the run config items.
+        TODO implementation. Needs to communicate with the model piece in order to draw these things.
+        :param self:
+        :return:
+        """
+        pass
 
 
 class ThisWindow(QMainWindow):

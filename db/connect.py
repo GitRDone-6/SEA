@@ -5,7 +5,7 @@ class Connect:
     """
     Our database class
     """
-
+    
     def __init__(self):
         # Global variable
         # Connect to default mongo localhost: 27017
