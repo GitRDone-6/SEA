@@ -1303,6 +1303,9 @@ class Ui_MainWindow(object):
 
     def button_cancel_run_config_on_click(self):
         # TODO add implementation
+        if self.__came_from_run_list:
+            self.__came_from_run_list = False
+            self.action_run_list_on_click()
         print('button_cancel_run_config_on_click')
 
     '''
