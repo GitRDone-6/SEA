@@ -12,6 +12,7 @@ import sys
 from PyQt5 import Qt
 from PyQt5.QtCore import QCoreApplication, QMetaObject, QRect, Qt
 from PyQt5.QtGui import QFont
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QAction, QWidget, QStackedWidget, QGridLayout, QSplitter, \
     QVBoxLayout, QStatusBar, QMenu, QMenuBar, QSizePolicy, QSpacerItem, QComboBox, QLineEdit, QLabel, QFrame, \
     QPlainTextEdit, QTableWidgetItem, QTableWidget, QTabWidget, QLayout, QMainWindow, QApplication, QInputDialog, \
@@ -21,6 +22,7 @@ from db.connect import Connect
 from model.tool_configuration import ToolConfiguration
 from xml.etree.ElementTree import Element, tostring
 from xml_handler import XmlDictConfig
+from bson.objectid import ObjectId
 
 
 #import threading
@@ -37,10 +39,10 @@ class Ui_MainWindow(object):
 #    __model: sea.SEA
     __came_from_run_list: bool = False
 
-
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
+        self.db_connection = Connect()
         MainWindow.resize(1100, 751)
         self.action_tool = QAction(MainWindow)
         self.action_tool.setObjectName(u"action_tool")
@@ -598,40 +600,43 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_20.addWidget(self.tool_list_title)
 
-        self.tableWidget = QTableWidget(self.layoutWidget8)
-        if (self.tableWidget.columnCount() < 2):
-            self.tableWidget.setColumnCount(2)
+        self.QTable_tool_list = QTableWidget(self.layoutWidget8)
+        self.QTable_tool_list.setColumnCount(3)
+        self.QTable_tool_list.setColumnHidden(2, True)
+        if (self.QTable_tool_list.columnCount() < 2):
+            self.QTable_tool_list.setColumnCount(2)
         __qtablewidgetitem11 = QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(0, __qtablewidgetitem11)
+        self.QTable_tool_list.setHorizontalHeaderItem(0, __qtablewidgetitem11)
         __qtablewidgetitem12 = QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(1, __qtablewidgetitem12)
-        if (self.tableWidget.rowCount() < 4):
-            self.tableWidget.setRowCount(4)
+        self.QTable_tool_list.setHorizontalHeaderItem(1, __qtablewidgetitem12)
+        if (self.QTable_tool_list.rowCount() < 4):
+            self.QTable_tool_list.setRowCount(4)
         __qtablewidgetitem13 = QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(0, __qtablewidgetitem13)
+        self.QTable_tool_list.setVerticalHeaderItem(0, __qtablewidgetitem13)
         __qtablewidgetitem14 = QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(1, __qtablewidgetitem14)
+        self.QTable_tool_list.setVerticalHeaderItem(1, __qtablewidgetitem14)
         __qtablewidgetitem15 = QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(2, __qtablewidgetitem15)
+        self.QTable_tool_list.setVerticalHeaderItem(2, __qtablewidgetitem15)
         __qtablewidgetitem16 = QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(3, __qtablewidgetitem16)
-        self.tableWidget.setObjectName(u"tableWidget")
-        self.tableWidget.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        self.tableWidget.setSortingEnabled(True)
-        self.tableWidget.horizontalHeader().setCascadingSectionResizes(True)
-        self.tableWidget.horizontalHeader().setMinimumSectionSize(200)
-        self.tableWidget.horizontalHeader().setDefaultSectionSize(200)
-        self.tableWidget.horizontalHeader().setProperty("showSortIndicator", True)
-        self.tableWidget.horizontalHeader().setStretchLastSection(True)
-        self.tableWidget.verticalHeader().setVisible(False)
-        self.tableWidget.verticalHeader().setCascadingSectionResizes(True)
-        self.tableWidget.verticalHeader().setMinimumSectionSize(50)
-        self.tableWidget.verticalHeader().setDefaultSectionSize(50)
-        self.tableWidget.verticalHeader().setHighlightSections(True)
-        self.tableWidget.verticalHeader().setProperty("showSortIndicator", True)
-        self.tableWidget.verticalHeader().setStretchLastSection(True)
+        self.QTable_tool_list.setVerticalHeaderItem(3, __qtablewidgetitem16)
+        self.QTable_tool_list.setObjectName(u"QTable_tool_list")
+        self.QTable_tool_list.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.QTable_tool_list.setSortingEnabled(True)
+        self.QTable_tool_list.horizontalHeader().setCascadingSectionResizes(True)
+        self.QTable_tool_list.horizontalHeader().setMinimumSectionSize(200)
+        self.QTable_tool_list.horizontalHeader().setDefaultSectionSize(200)
+        self.QTable_tool_list.horizontalHeader().setProperty("showSortIndicator", True)
+        self.QTable_tool_list.horizontalHeader().setStretchLastSection(True)
+        self.QTable_tool_list.verticalHeader().setVisible(False)
+        self.QTable_tool_list.verticalHeader().setCascadingSectionResizes(True)
+        self.QTable_tool_list.verticalHeader().setMinimumSectionSize(50)
+        self.QTable_tool_list.verticalHeader().setDefaultSectionSize(50)
+        self.QTable_tool_list.verticalHeader().setHighlightSections(True)
+        self.QTable_tool_list.verticalHeader().setProperty("showSortIndicator", True)
+        self.QTable_tool_list.verticalHeader().setStretchLastSection(False)
+        self.QTable_tool_list.setSelectionBehavior(QtWidgets.QTableWidget.SelectRows) #TODO Fix row selection
 
-        self.verticalLayout_20.addWidget(self.tableWidget)
+        self.verticalLayout_20.addWidget(self.QTable_tool_list)
 
         self.horizontalLayout_9 = QHBoxLayout()
         self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
@@ -944,7 +949,7 @@ class Ui_MainWindow(object):
         self.stacked_run_content_area.setCurrentIndex(1)
         self.tab_scan_result_area.setCurrentIndex(2)
         self.stacked_tool_content_area.setCurrentIndex(0)
-
+        self.build_Tool_list_table()
         QMetaObject.connectSlotsByName(MainWindow)
 
     def add_scan_tab(self, tool_name: str):
@@ -1093,9 +1098,9 @@ class Ui_MainWindow(object):
                                                       u"<html><head/><body><p><span style=\" font-size:11pt; font-weight:600;\">XML Report</span></p></body></html>",
                                                       None))
         self.tool_list_title.setText(QCoreApplication.translate("MainWindow", u"Tool List", None))
-        ___qtablewidgetitem11 = self.tableWidget.horizontalHeaderItem(0)
+        ___qtablewidgetitem11 = self.QTable_tool_list.horizontalHeaderItem(0)
         ___qtablewidgetitem11.setText(QCoreApplication.translate("MainWindow", u"Name of Tool \u21f5", None));
-        ___qtablewidgetitem12 = self.tableWidget.horizontalHeaderItem(1)
+        ___qtablewidgetitem12 = self.QTable_tool_list.horizontalHeaderItem(1)
         ___qtablewidgetitem12.setText(QCoreApplication.translate("MainWindow", u"Description of Tool", None));
         self.pushbutton_add_tool.setText(QCoreApplication.translate("MainWindow", u"+", None))
         self.pushbutton_delete_tool.setText(QCoreApplication.translate("MainWindow", u"-", None))
@@ -1184,6 +1189,10 @@ class Ui_MainWindow(object):
 
     def pushbutton_delete_tool_on_click(self):
         # TODO add implementation
+        record_id = self.value_of_selected_row()
+        query = {"_id" : ObjectId(record_id)}
+        self.db_connection.delete_data('TOOL', query)
+        self.build_Tool_list_table()
         print('pushbutton_delete_tool_on_click')
 
     def pushbutton_move_down_on_click(self):
@@ -1252,11 +1261,22 @@ class Ui_MainWindow(object):
         print('tool_specification_browse_button_on_click')
 
     def set_tool_dialog(self, tool_dictionary):
+        # TODO fix option argument insert
+        #option_argument_string = self.list_to_string(tool_dictionary["Option_Argument"])
         self.lineedit_tool_name.setText(tool_dictionary["Tool_Name"])
         self.plaintextedit_tool_description.setPlainText(tool_dictionary["Tool_Description"])
-        #self.lineedit_tool_path
-        #self.plaintextedit_tool_option_argument
-        #self.plaintextedit_tool_data_specification
+        self.lineedit_tool_path.setText(tool_dictionary["Tool_Path"])
+        #self.plaintextedit_tool_option_argument.setPlainText(option_argument_string)
+        #self.plaintextedit_tool_data_specification.setPlainText("Test")
+
+    def list_to_string(self, list):
+        # TODO Fix conversion
+        print(list)
+        list_string = ''
+        for i in list:
+            list_string += i + '\n'
+            print(i)
+        return list_string
 
     def xml_to_dict(self, xml_file):
         parser = ElementTree.XMLParser(encoding="utf-8")
@@ -1284,13 +1304,44 @@ class Ui_MainWindow(object):
         tool = self.get_tool_dialog()
         # record Tool information to db
         record = tool.to_dict()
-        db_connection = Connect()
-        record_id = db_connection.save_data(record, 'TOOL')
-        print(record_id)
-        old_record = db_connection.retrieve_data(record_id, 'TOOL')
-        pprint.pprint(old_record)
+        record_id = self.db_connection.save_data(record, 'TOOL')
+        old_record = self.db_connection.retrieve_data(record_id, 'TOOL')
+        #pprint.pprint(old_record)
+        self.build_Tool_list_table()
         # TODO add PATH def
         print('save_button_on_click')
+
+    def build_Tool_list_table(self):
+        query = {"_id" : 1, "Tool_Name" : 1, "Tool_Description" : 1}
+        tools = self.db_connection.retrieve_collection('TOOL', query)
+        row = 0
+        self.QTable_tool_list.setRowCount(row)
+        for tool in tools:
+            print(tool)
+            row = self.QTable_tool_list.rowCount()
+            self.QTable_tool_list.setRowHeight(row, 25)
+            self.QTable_tool_list.setRowCount(row + 1)
+
+            item = QTableWidgetItem(tool["Tool_Name"])
+            item.setFlags(Qt.ItemIsEnabled)
+            self.QTable_tool_list.setItem(row, 0, item)
+
+            item = QTableWidgetItem(tool["Tool_Description"])
+            item.setFlags(Qt.ItemIsEnabled)
+            self.QTable_tool_list.setItem(row, 1, item)
+
+            # TODO fix hidden _id col
+            item = QTableWidgetItem(str(tool["_id"]))
+            item.setFlags(Qt.ItemIsEnabled)
+            self.QTable_tool_list.setItem(row, 2, item)
+            row += 1
+
+    def value_of_selected_row(self):
+        row = self.QTable_tool_list.currentRow()
+        col = self.QTable_tool_list.item(row, 2)
+        text = col.text()
+        print(text)
+        return text
 
     def tool_option_argument(self):
         return self.plaintextedit_tool_option_argument.toPlainText().splitlines()
