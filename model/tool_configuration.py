@@ -58,8 +58,8 @@ class ToolConfiguration:
     '''
 
     def to_dict(self):
-        return {"Tool Name" : self.tool_name(),
-                "Tool Description" : self.tool_description(),
-                "Tool Path" : self.tool_path(),
-                "Option Argument" : self.tool_option_arg(),
-                "Output Data Specification" : self.tool_output_data_spec()}
+        return {"Tool_Name" : self.tool_name(),
+                "Tool_Description" : self.tool_description(),
+                "Tool_Path" : self.tool_path(),
+                "Option_Argument" : self.tool_option_arg(),
+                "Output_Data_Specification" : self.tool_output_data_spec()}
