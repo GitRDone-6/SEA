@@ -37,5 +37,9 @@ class Connect:
         record = current_collection.find_one(query)
         return record
 
-    def retrieve_collection(self, collection, expression = ''):
-        return self.current_db[collection].find() if expression == '' else self.current_db[collection].find(expression)
+    def retrieve_collection(self, collection, query = {}):
+        return self.current_db[collection].find() if query == {} \
+            else self.current_db[collection].find({}, query)
+
+    def delete_data(self, collection, query):
+        self.current_db[collection].remove(query)
