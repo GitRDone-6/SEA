@@ -1,3 +1,5 @@
+from model import scan
+
 class RunState:
     """
     Provides the generalization of all of the different kinds of states of Run.
@@ -5,7 +7,7 @@ class RunState:
     influence the actions of the System.
     """
 
-    def __init__(self, scans_list):
+    def __init__(self, scans_list: [scan.Scan]):
         self._scan_list = scans_list
         pass
 
@@ -17,3 +19,7 @@ class RunState:
 
     def terminate(self):
         pass
+
+    def scans_list(self) -> [scan.Scan]:
+        return self._scan_list
+

@@ -1,3 +1,6 @@
+import enum
+
+
 class Operator(enum.Enum):
         And = 1
         Or = 2

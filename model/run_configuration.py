@@ -14,17 +14,14 @@ class RunConfiguration:
     def __init__(self):
         pass
 
-
-
-# comments
     def run_name(self) -> str:
         return self.__run_name
 
     def run_description(self) -> str:
         return self.__run_description
 
-    def run_state(self) -> type:
-        return type(self.__run_state)
+    def run_state(self) -> run_state.RunState:
+        return self.__run_state
 
     def target(self) -> target.Target:
         return self.__target
@@ -46,3 +43,16 @@ class RunConfiguration:
         """
         #TODO
         return True
+
+    def to_dict(self) -> dict:
+        """
+        Returns a dictionary suitable for a record in mongoDB
+        :return:
+        """
+        run_object_dictionary: dict = {'run_name': self.run_name(),
+                                       'run_description': self.run_description(),
+                                       'run_target': self.target().to_dict(),
+                                       'scan_configuration_ids': [s.tool_config().tool_record_id() for s in
+                                                                  self.scan_configurations()]}
+        # Get all scan tool configurations ids
+        return run_object_dictionary

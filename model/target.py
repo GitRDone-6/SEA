@@ -17,3 +17,8 @@ class Target:
 
     def blacklist(self) -> blacklisted_ip.BlacklistedIP:
         return self.__blacklist
+
+    def to_dict(self) -> dict:
+        target_object_dictionary: dict = {'whitelist': self.whitelist().to_dict(),
+                                          'blacklist': self.blacklist().to_dict()}
+        return target_object_dictionary
