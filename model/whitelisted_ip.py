@@ -8,8 +8,9 @@ class WhitelistedIP(ip_range.IPRange):
 
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, ip_list: list[tuple] or list[str]):
+        ip_range.IPRange.__init__(self)
+        self._list = ip_list
 
     '''
     No editing.
@@ -32,5 +33,5 @@ class WhitelistedIP(ip_range.IPRange):
     def eliminate_ip(self, ip: str) -> bool:
         return False
 
-    def eliminate_range(self, range: 'IPRange') -> bool:
+    def eliminate_range(self, range: 'ip_range.IPRange') -> bool:
         return False

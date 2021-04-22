@@ -28,7 +28,7 @@ from model.tool_list import ToolList
 
 #import threading
 
-# from model import run_config
+from model.sea import SEA
 
 # from PySide2.QtCore import *
 # from PySide2.QtGui import *
@@ -37,14 +37,16 @@ from model.tool_list import ToolList
 
 class Ui_MainWindow(object):
 
-#    __model: sea.SEA
+    __model: SEA
     __came_from_run_list: bool = False
 
     def setupUi(self, MainWindow):
+
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         self.db_connection = Connect()
         self.tool_list = ToolList()
+        self.__model = SEA()
         MainWindow.resize(1100, 751)
         self.action_tool = QAction(MainWindow)
         self.action_tool.setObjectName(u"action_tool")
@@ -1479,6 +1481,11 @@ class Ui_MainWindow(object):
             self.__came_from_run_list = False
             self.action_run_list_on_click()
         print('button_save_run_config_on_click')
+        self.__model.save_run_config(self.textline_run_name.text(),
+                                     self.textbox_run_desc.toPlainText(),
+                                     self.textbox_whitelist.toPlainText(),
+                                     self.textbox_blacklist.toPlainText())
+
 
     def button_cancel_run_config_on_click(self):
         # TODO add implementation

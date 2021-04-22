@@ -497,6 +497,7 @@ class IPRange:
         :return: Whether or not the given IP was found and eliminated. False if not found or not eliminated
         :rtype: bool
         """
+        return False
 
     def to_dict(self) -> dict:
         """
