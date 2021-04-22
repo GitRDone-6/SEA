@@ -4,11 +4,9 @@ from PyQt5.QtWidgets import QApplication
 
 from model.sea import SEA
 from control.control import Controller
-from gui.ui_stacked import ThisWindow
-
+from gui.ui_stacked import Ui_MainWindow, ThisWindow
 
 def main():
-
     model = SEA()
 
     control = Controller()

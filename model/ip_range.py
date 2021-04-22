@@ -48,7 +48,7 @@ class IPRange:
         """
 
         '''
-        [("127.0.0.1", "128.0.0.1"), ("129.0.0.1"), ("201.0.0.1", 204.0.0.1")]
+        [("127.0.0.1", "128.0.0.1"), "129.0.0.1", ("201.0.0.1", 204.0.0.1")]
         So there are three different cases we have to figure out:
         
             Case    1) The range given is entirely inclusive to 1 IP tuple.
@@ -142,7 +142,7 @@ class IPRange:
                     else:
                         self._list.append((given_lower, given_upper))
                         break
-                elif ind is 0:
+                elif ind == 0:
                     if given_upper < self._list[ind][0]:
                         self._list.insert(ind, (given_lower, given_upper))
                         break
@@ -363,7 +363,7 @@ class IPRange:
         Returns whether the IP range is empty or not
         :return:
         """
-        return len(self._list) is 0
+        return len(self._list) == 0
 
     def pop_lowest(self) -> str:
         """
@@ -389,11 +389,11 @@ class IPRange:
     @staticmethod
     def get_next_ip(ip: str, upper_or_lower:str) -> str:
         ip_list:list[int] = [int(octet) for octet in ip.split('.')]
-        if upper_or_lower is 'upper':
-            if ip_list[-1] is 255:
-                if ip_list[-2] is 255:
-                    if ip_list[-3] is 255:
-                        if ip_list[-4] is 255:
+        if upper_or_lower == 'upper':
+            if ip_list[-1] == 255:
+                if ip_list[-2] == 255:
+                    if ip_list[-3] == 255:
+                        if ip_list[-4] == 255:
                             return ip
                         else:
                             ip_list[-4] += 1
@@ -415,10 +415,10 @@ class IPRange:
                 return '.'.join([str(octet) for octet in ip_list])
 
         elif upper_or_lower is 'lower':
-            if ip_list[-1] is 0:
-                if ip_list[-2] is 0:
-                    if ip_list[-3] is 0:
-                        if ip_list[-4] is 0:
+            if ip_list[-1] == 0:
+                if ip_list[-2] == 0:
+                    if ip_list[-3] == 0:
+                        if ip_list[-4] == 0:
                             return ip
                         else:
                             ip_list[-4] -= 1
