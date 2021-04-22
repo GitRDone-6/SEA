@@ -6,7 +6,7 @@ class ToolConfiguration:
     Sets the configuration settings for a tool
     """
 
-    __tool_record_id : str
+    __tool_record_id: str
     __tool_name: str
     __tool_description: str
     __tool_path: str
