@@ -1,4 +1,27 @@
+import sys
+
+from PyQt5.QtWidgets import QApplication
+
 from model.sea import SEA
 from control.control import Controller
-from gui.ui_stacked import Ui_MainWindow
+from gui.ui_stacked import Ui_MainWindow, ThisWindow
+
+def main():
+    model = SEA()
+
+    control = Controller()
+
+    app = QApplication([])
+    view = ThisWindow()
+
+    view.ui_main.insert_model(model)
+    control.insert_gui(view.ui_main)
+    model.set_controller(control)
+
+    view.show()
+    sys.exit(app.exec())
+
+
+if __name__ == '__main__':
+    main()
 

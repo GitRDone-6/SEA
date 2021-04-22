@@ -1,13 +1,16 @@
-from gui import ui_stacked
-import threading
+from gui.ui_stacked import Ui_MainWindow
 
-class Controller(threading.Thread):
 
-    __gui: ui_stacked.Ui_MainWindow
+class Controller():
+
+
+    __gui: Ui_MainWindow
 
     def __init__(self):
         pass
 
+    def insert_gui(self, gui: Ui_MainWindow):
+        self.__gui = gui
 
 
     def add_more_tabs(self) -> None:
@@ -33,5 +36,5 @@ class Controller(threading.Thread):
         self.example_scan_output_3.setObjectName(u"example_scan_output_3")
         self.tab_scan_result_area.addTab(self.example_scan_output_3, "")
 
-    def set_gui(self, gui: ui_stacked.Ui_MainWindow):
+    def set_gui(self, gui):
         self.__gui = gui

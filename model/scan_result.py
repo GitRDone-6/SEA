@@ -7,7 +7,8 @@ class ScanResult:
     Stores the statistical data from a Scan.
     """
 
-    __start_scan_time, __end_scan_time = None
+    __start_scan_time: datetime
+    __end_scan_time: datetime
     __scanned_ips: ip_range.IPRange
     __execution_status: str
     __formatted_scan_output = None #TODO make this object
