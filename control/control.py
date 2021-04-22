@@ -35,6 +35,3 @@ class Controller():
         self.example_scan_output_3 = QWidget()
         self.example_scan_output_3.setObjectName(u"example_scan_output_3")
         self.tab_scan_result_area.addTab(self.example_scan_output_3, "")
-
-    def set_gui(self, gui):
-        self.__gui = gui
