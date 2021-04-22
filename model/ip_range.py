@@ -16,9 +16,11 @@ class IPRange:
 
     _list: list[tuple[str, str]] or list[str]
 
-    def __init__(self, lower: str, upper: str):
+    def __init__(self, lower: str, upper: str, dictionary: dict = None):
         self._check_valid_range(lower, upper)
         self._list = [(lower, upper)]
+        if dictionary:
+            self._list = dictionary['ip_range_list']
 
     @staticmethod
     def _check_valid_range(lower: str, upper: str) -> None:
