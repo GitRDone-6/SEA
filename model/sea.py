@@ -12,12 +12,11 @@ class SEA(threading.Thread):
     __controller: control.Controller
     __active_run_config: run_configuration.RunConfiguration
     __run_config_list: list[run_configuration.RunConfiguration]
+    __db: connect.Connect()
 
 
     def __init__(self):
         threading.Thread.__init__()
-
-
 
     def generate_execute_run_request(self, run_config):
         """
@@ -58,6 +57,25 @@ class SEA(threading.Thread):
         :return:
         """
         pass
+
+    def save_run_config(self, run_name: str, run_description:str, whitelisted_ip: str, blacklisted_ip: str):
+        """
+        Saves the run config data to the DB
+        :param run_name:
+        :param run_description:
+        :param whitelisted_ip:
+        :param blacklisted_ip:
+        :return:
+        """
+
+        self.__active_run_config = run_configuration.RunConfiguration()
+        self.__active_run_config.set_run_name(run_name).set_run_description(run_description).\
+            set_whitelist(whitelisted_ip).set_blacklist(blacklisted_ip)
+        self.__run_config_list.append(self.__active_run_config)
+        #Save to the DB
+        run_config_dict: dict = self.__active_run_config.to_dict()
+        record_id = self.__db.save_data(run_config_dict, 'RUN')
+        print(record_id)
 
     def set_controller(self, controller: control.Controller):
         self.__controller = controller

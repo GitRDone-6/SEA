@@ -1,4 +1,4 @@
-from model import whitelisted_ip, blacklisted_ip
+from model import whitelisted_ip, blacklisted_ip, ip_range
 
 
 class Target:
@@ -22,3 +22,11 @@ class Target:
         target_object_dictionary: dict = {'whitelist': self.whitelist().to_dict(),
                                           'blacklist': self.blacklist().to_dict()}
         return target_object_dictionary
+
+    def set_whitelist(self, iprange: ip_range.IPRange) -> 'Target':
+        self.__whitelist = whitelisted_ip.WhitelistedIP(iprange.get_list())
+        return self
+
+    def set_blacklist(self, iprange: ip_range.IPRange) -> 'Target':
+        self.__blacklist = blacklisted_ip.BlacklistedIP(iprange.get_list())
+        return self
