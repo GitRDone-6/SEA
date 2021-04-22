@@ -1,22 +1,20 @@
-from control import control
 from db import connect
 import run_configuration
-import threading
+from control.control import Controller
 
 
-class SEA(threading.Thread):
+class SEA():
     """
     There is a need for global attributes and responsibilities. This might be the main method.
     Can change.
     """
-    __controller: control.Controller
     __active_run_config: run_configuration.RunConfiguration
     __run_config_list: list[run_configuration.RunConfiguration]
     __db: connect.Connect()
 
 
     def __init__(self):
-        threading.Thread.__init__()
+        pass
 
     def generate_execute_run_request(self, run_config):
         """
@@ -77,9 +75,6 @@ class SEA(threading.Thread):
         record_id = self.__db.save_data(run_config_dict, 'RUN')
         print(record_id)
 
-    def set_controller(self, controller: control.Controller):
-        self.__controller = controller
-
     def run(self):
         #TODO do implementation
         pass
@@ -87,3 +82,6 @@ class SEA(threading.Thread):
     def start(self):
         #TODO do implementation
         pass
+
+    def set_controller(self, controller: Controller):
+        self.__controller = controller

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import pprint
 ################################################################################
 ## Form generated from reading UI file 'stackediSjcyw.ui'
 ##
@@ -19,16 +18,16 @@ from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QAction, QWidget, QStacked
     QFileDialog
 from xml.etree import ElementTree
 from db.connect import Connect
-from model.tool_configuration import ToolConfiguration
 from xml.etree.ElementTree import Element, tostring
-from xml_handler import XmlDictConfig
+from gui.xml_handler import XmlDictConfig
 from bson.objectid import ObjectId
 from model.tool_list import ToolList
+import model
 
 
 #import threading
 
-from model.sea import SEA
+
 
 # from PySide2.QtCore import *
 # from PySide2.QtGui import *
@@ -37,7 +36,6 @@ from model.sea import SEA
 
 class Ui_MainWindow(object):
 
-    __model: SEA
     __came_from_run_list: bool = False
 
     def setupUi(self, MainWindow):
@@ -46,7 +44,6 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         self.db_connection = Connect()
         self.tool_list = ToolList()
-        self.__model = SEA()
         MainWindow.resize(1100, 751)
         self.action_tool = QAction(MainWindow)
         self.action_tool.setObjectName(u"action_tool")
@@ -1517,6 +1514,9 @@ class Ui_MainWindow(object):
         :return:
         """
         pass
+
+    def insert_model(self, model):
+        self.__model = model
 
 
 class ThisWindow(QMainWindow):
