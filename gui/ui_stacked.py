@@ -23,6 +23,7 @@ from model.tool_configuration import ToolConfiguration
 from xml.etree.ElementTree import Element, tostring
 from xml_handler import XmlDictConfig
 from bson.objectid import ObjectId
+from model.tool_list import ToolList
 
 
 #import threading
@@ -43,6 +44,7 @@ class Ui_MainWindow(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         self.db_connection = Connect()
+        self.tool_list = ToolList()
         MainWindow.resize(1100, 751)
         self.action_tool = QAction(MainWindow)
         self.action_tool.setObjectName(u"action_tool")
@@ -1185,6 +1187,7 @@ class Ui_MainWindow(object):
 
     def pushbutton_add_tool_on_click(self):
         # TODO add implementation
+        self.clear_text_dialog()
         print('pushbutton_add_tool_on_click')
 
     def pushbutton_delete_tool_on_click(self):
@@ -1234,51 +1237,86 @@ class Ui_MainWindow(object):
         print('button_output_data_add_on_click')
 
     def pushbutton_export_tool_spec_file_on_click(self):
+        '''
+        Saves Tool Configuration to an .xml file
+        '''
+
+        # Retrieve designated save path
         path = self.openSaveDialog()
+
+        # Get dialog from gui in form of a Tool Object
         tool_info = self.get_tool_dialog()
+
+        # Turns Tool Object to dict
         tool_dictionary = tool_info.to_dict()
+
+        # Turns dict into xml format
         xml = self.dict_to_xml('Tool', tool_dictionary)
         tool_xml = ElementTree.tostring(xml, encoding='unicode', method='xml')
+
+        # Saves xml String to the given path
         with open(path, 'w') as w:
             w.write(tool_xml)
         print('pushbutton_export_tool_spec_file_on_click')
 
     def get_tool_dialog(self):
+        '''
+        Gets information in from tool configuration GUI dialog boxes
+        :return: Tool object
+        '''
         tool = ToolConfiguration()
-        tool.set_name(self.lineedit_tool_name.text())
-        tool.set_description(self.plaintextedit_tool_description.toPlainText())
-        tool.set_path(self.lineedit_tool_path.text())
-        tool.set_option_arg(self.tool_option_argument())
-        tool.set_output_data_spec(self.tool_output_data_spec())
+        tool.set_name(self.lineedit_tool_name.text())                               # Tool Name
+        tool.set_description(self.plaintextedit_tool_description.toPlainText())     # Tool Description
+        tool.set_path(self.lineedit_tool_path.text())                               # Tool Path
+        tool.set_option_arg(self.tool_option_argument())                            # Tool option and argument
+        tool.set_output_data_spec(self.tool_output_data_spec())                     # Tool output data specification
         return tool
 
     def tool_specification_browse_button_on_click(self):
-        # sets path chosen into line edit text box
+        '''
+        gets xml file and turns it into a dictionary.
+        :return:
+        '''
         path = self.browse_file()
+        # sets path chosen into line edit text box
         self.tool_specification_file_input.setText(path)
+        # turns xml file into dictionary
         dictionary = self.xml_to_dict(path)
+        # sets the text into gui dialog from dictionary
         self.set_tool_dialog(dictionary)
         print('tool_specification_browse_button_on_click')
 
     def set_tool_dialog(self, tool_dictionary):
-        # TODO fix option argument insert
-        #option_argument_string = self.list_to_string(tool_dictionary["Option_Argument"])
+        '''
+        sets information into the gui
+        :param tool_dictionary:
+        :return:
+        '''
+        option_argument_string = self.list_to_string(tool_dictionary["Option_Argument"])
         self.lineedit_tool_name.setText(tool_dictionary["Tool_Name"])
         self.plaintextedit_tool_description.setPlainText(tool_dictionary["Tool_Description"])
         self.lineedit_tool_path.setText(tool_dictionary["Tool_Path"])
-        #self.plaintextedit_tool_option_argument.setPlainText(option_argument_string)
-        #self.plaintextedit_tool_data_specification.setPlainText("Test")
+        self.plaintextedit_tool_option_argument.setPlainText(option_argument_string)
+        self.plaintextedit_tool_data_specification.setPlainText(self.list_to_string(tool_dictionary["Output_Data_Specification"]))
 
     def list_to_string(self, list):
-        # TODO Fix conversion
-        print(list)
-        list_string = ''
-        for i in list:
-            list_string += i + '\n'
-            print(i)
+        '''
+        Takes list string and sanitizes string
+        :param list:
+        :return:
+        '''
+        list = list.replace("\'", "")
+        list = list.replace(" ", "")
+        sanitized_info = list.strip(' [] ')
+        list_string = sanitized_info.replace(",","\n")
         return list_string
 
     def xml_to_dict(self, xml_file):
+        '''
+        Takes xml file and converts it into a dictionary
+        :param xml_file: path to xml file
+        :return: converted dictionary
+        '''
         parser = ElementTree.XMLParser(encoding="utf-8")
         tree = ElementTree.parse(xml_file, parser=parser)
         root = tree.getroot()
@@ -1305,13 +1343,15 @@ class Ui_MainWindow(object):
         # record Tool information to db
         record = tool.to_dict()
         record_id = self.db_connection.save_data(record, 'TOOL')
-        old_record = self.db_connection.retrieve_data(record_id, 'TOOL')
-        #pprint.pprint(old_record)
+        tool.set_tool_record_id(record_id)
+        self.tool_list.add_tool(tool)
         self.build_Tool_list_table()
         # TODO add PATH def
         print('save_button_on_click')
 
     def build_Tool_list_table(self):
+        current_list = self.tool_list.tool_list()
+        print(current_list)
         query = {"_id" : 1, "Tool_Name" : 1, "Tool_Description" : 1}
         tools = self.db_connection.retrieve_collection('TOOL', query)
         row = 0
