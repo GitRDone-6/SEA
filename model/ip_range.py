@@ -36,7 +36,7 @@ class IPRange:
         if lower > upper:
             raise ValueError('Invalid Range: lower is greater than upper')
 
-    def insert_range(self, given_lower: str, given_upper: str) -> None:
+    def insert_range(self, given_lower: str, given_upper: str) -> 'IPRange':
         """
         Insert a given range. Input the same IP for a single IP.
         :param given_upper: inclusive upper bound of an ip range.
@@ -154,6 +154,7 @@ class IPRange:
                     if given_upper < self._list[ind][0]:
                         self._list.insert(ind, (given_lower, given_upper))
                         break
+        return self
 
     @staticmethod
     def _different_by_one(ip1: str, ip2: str) -> bool:

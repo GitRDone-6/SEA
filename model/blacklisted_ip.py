@@ -11,13 +11,25 @@ class BlacklistedIP(ip_range.IPRange):
         pass
 
     '''
-    The next three methods are overridden so that they cannot be edited.
+    No editing.
     '''
-    def insert_range(self, given_lower: str, given_upper: str) -> None:
-        pass
+    def insert_range(self, given_lower: str, given_upper: str) -> 'BlacklistedIP':
+        return self
+
+    def insert_ip(self, ip: str) -> 'BlacklistedIP':
+        return self
 
     def pop_lowest(self) -> str:
         return ''
 
     def pop_highest(self) -> str:
         return ''
+
+    def clear_list(self) -> 'BlacklistedIP':
+        return self
+
+    def eliminate_ip(self, ip: str) -> bool:
+        return False
+
+    def eliminate_range(self, range: 'ip_range.IPRange') -> bool:
+        return False
