@@ -33,5 +33,5 @@ class Controller(threading.Thread):
         self.example_scan_output_3.setObjectName(u"example_scan_output_3")
         self.tab_scan_result_area.addTab(self.example_scan_output_3, "")
 
-    def set_gui(self, gui: ui_stacked.Ui_MainWindow):
+    def insert_gui(self, gui: ui_stacked.Ui_MainWindow):
         self.__gui = gui
