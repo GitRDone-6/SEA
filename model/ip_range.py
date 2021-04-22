@@ -1,3 +1,4 @@
+import math
 from copy import deepcopy
 
 
@@ -12,6 +13,8 @@ class IPRange:
     Another IPRange has been discovered in an api called netaddr 0.8.0 https://pypi.org/project/netaddr/
     For the projects sake, we'll still construct our own data structure 3/23/21
     """
+
+    _list: list[tuple[str, str]] or list[str]
 
     def __init__(self, lower: str, upper: str):
         self._check_valid_range(lower, upper)
@@ -75,7 +78,9 @@ class IPRange:
                 pass
             #If its the case where o[---n)o) and n[-o[-), then the o[ is now n[
             elif self._list[index][1] >= given_upper and given_lower < self._list[index][0]:
+                self._list[index] = list(self._list[index])
                 self._list[index][0] = given_lower
+                self._list[index] = tuple(self._list[index])
             #If its the case where o[n[ and o)-n), then n) is the new o)
             elif self._list[index][0] <= given_lower and given_upper > self._list[index][1]:
                 '''
@@ -84,7 +89,9 @@ class IPRange:
                 '''
                 #If its the last element of the list, just update the upper.
                 if index is len(self._list)-1:
+                    self._list[index] = list(self._list[index])
                     self._list[index][1] = given_upper
+                    self._list[index] = tuple(self._list[index])
                 #Since there might be more than one tuple to eliminate, then lets track how many.
                 ranges_to_eliminate = 0
                 for ip_range in self._list[index + 1:]:
@@ -141,10 +148,52 @@ class IPRange:
                     if given_upper < self._list[ind]:
                         self._list.insert(ind, (given_lower, given_upper))
                         break
-                elif self._list[index] is tuple[str,str]:
+                elif type(self._list[ind]) is tuple:
                     if given_upper < self._list[ind][0]:
                         self._list.insert(ind, (given_lower, given_upper))
                         break
+
+    @staticmethod
+    def _different_by_one(ip1: str, ip2: str) -> bool:
+        """
+        Returns whether or not the two ips are different by 1
+        :param ip1: First IP to be compared
+        :type ip1: str
+        :param ip2: Second IP to be compared
+        :type ip2: str
+        :return: True if the IP's are logically different by 1, false if same or different by more than 1
+        """
+
+        if ip1 is ip2: return False
+
+        greater_ip: str = max(ip1, ip2)
+        greater_list: list[int] = [int(octet) for octet in greater_ip.split('.')]
+        lesser_ip: str = min(ip1, ip2)
+        lesser_list: list[int] = [int(octet) for octet in lesser_ip.split('.')]
+
+        if lesser_list[-1] == 255 and greater_list[-1] == 0:
+            if lesser_list[-2] == 255 and greater_list[-2] == 0:
+                if lesser_list[-3] == 255 and greater_list[-3] == 0:
+                    if lesser_list[-4] == 255 and greater_list[-4] == 0:
+                        return False
+                    elif lesser_list[-4]+1 == greater_list[-4]:
+                        return True
+                    else:
+                        return False
+                elif lesser_list[-3]+1 == greater_list[-3] and lesser_list[-4] == greater_list[-4]:
+                    return True
+                else:
+                    return False
+            elif lesser_list[-2]+1 == greater_list[-2] and lesser_list[-3] == greater_list[-3] and lesser_list[-4] == greater_list[-4]:
+                return True
+            else:
+                return False
+        if lesser_list[-1]+1 == greater_list[-1] and \
+                lesser_list[-2] == greater_list[-2] and \
+                lesser_list[-3] == greater_list[-3] and \
+                lesser_list[-4] == greater_list[-4]:
+            return True
+        return False
 
     def insert_ip(self, ip: str) -> 'IPRange':
         """
@@ -154,6 +203,75 @@ class IPRange:
         :return: This IP Range object. Ensures that the object will now contain the IP.
         :rtype: IPRange
         """
+
+        list_size = len(self._list)
+        if not self._list: self._list.append(ip)
+        for index in range(list_size):
+            if index is list_size-1:
+                if type(self._list[index]) is str:
+                    if ip is not self._list[index]:
+                        if ip > self._list[index]:
+                            if IPRange._different_by_one(ip, self._list[index]):
+                                temp_ip = self._list[index]
+                                self._list[index] = (temp_ip, ip)
+                            else:
+                                self._list.append(ip)
+                        elif ip < self._list[index]:
+                            if IPRange._different_by_one(ip, self._list[index]):
+                                temp_ip = self._list[index]
+                                self._list[index] = (ip, temp_ip)
+                            else:
+                                self._list.insert(index, ip)
+                elif type(self._list[index]) is tuple:
+                    #IP before insert or after append. inside do nothing
+                    if ip < self._list[index][0]:
+                        if IPRange._different_by_one(ip, self._list[index][0]):
+                            self._list[index] = list(self._list[index])
+                            self._list[index][0] = ip
+                            self._list[index] = tuple(self._list[index])
+                        else:
+                            self._list.insert(index, ip)
+                    elif ip > self._list[index][1]:
+                        if IPRange._different_by_one(ip, self._list[index][1]):
+                            self._list[index] = list(self._list[index])
+                            self._list[index][1] = ip
+                            self._list[index] = tuple(self._list[index])
+                        else:
+                            self._list.append(ip)
+            else:
+                if self._list[index] is str:
+                    #IP Before insert and break, same do nothing and break, after continue
+                    if ip < self._list[index]:
+                        if IPRange._different_by_one(ip, self._list[index]):
+                            temp_ip = self._list[index]
+                            self._list[index] = (ip, temp_ip)
+                            break
+                        else:
+                            self._list.insert(index, ip)
+                            break
+                    elif ip is self._list[index]:
+                        break
+                    elif ip > self._list[index] and IPRange._different_by_one(ip, self._list[index]):
+                        temp_ip = self._list[index]
+                        self._list[index] = (temp_ip, ip)
+                        break
+                elif self._list[index] is tuple:
+                    #IP before insert and break, inside do nothing and break. After continue
+                    if ip < self._list[index][0]:
+                        if IPRange._different_by_one(ip, self._list[index][0]):
+                            self._list[index] = list(self._list[index])
+                            self._list[index][0] = ip
+                            self._list[index] = tuple(self._list[index])
+                            break
+                        else:
+                            self._list.insert(index, ip)
+                            break
+                    elif self._list[index][0] <= ip <= self._list[index][1]:
+                        break
+                    elif ip > self._list[index][1] and IPRange._different_by_one(ip, self._list[index][1]):
+                        self._list[index] = list(self._list[index])
+                        self._list[index][1] = ip
+                        self._list[index] = tuple(self._list[index])
         return self
 
     def contains(self, ip: str) -> bool:
@@ -164,8 +282,15 @@ class IPRange:
         :return: True if given IP is logically within the IP Range object, false otherwise. Ensures that ip is or is not
         logically inside of the IP Range object.
         """
-        return False
 
+        for ip_range in self._list:
+            if type(ip_range) is str:
+                if ip_range is ip:
+                    return True
+            elif type(ip_range) is tuple:
+                if ip_range[0] <= ip <= ip_range[1]:
+                    return True
+        return False
 
     def is_mutually_exclusive(self, other: 'IPRange') -> (bool, int):
         """
@@ -242,28 +367,115 @@ class IPRange:
         Removes and returns the lowest IP in the IP Range
         :return:
         """
-        pass
+        if not self._list: return ''
+        lowest_ip: str
+        if type(self._list[0]) is str:
+            lowest_ip = self._list[0]
+            del self._list[0]
+            return lowest_ip
+        if type(self._list[-1]) is tuple:
+            lowest_ip = self._list[0][0]
+            if IPRange._different_by_one(self._list[0][0], self._list[0][1]):
+                self._list[0] = self._list[0][1]
+                return lowest_ip
+            self._list[0] = list(self._list[0])
+            self._list[0][0] = IPRange.get_next_ip(self._list[0][0], 'upper')
+            self._list[0] = tuple(self._list[0])
+            return lowest_ip
+
+    @staticmethod
+    def get_next_ip(ip: str, upper_or_lower:str) -> str:
+        ip_list:list[int] = [int(octet) for octet in ip.split('.')]
+        if upper_or_lower is 'upper':
+            if ip_list[-1] is 255:
+                if ip_list[-2] is 255:
+                    if ip_list[-3] is 255:
+                        if ip_list[-4] is 255:
+                            return ip
+                        else:
+                            ip_list[-4] += 1
+                            ip_list[-3] = 0
+                            ip_list[-2] = 0
+                            ip_list[-1] = 0
+                            return '.'.join([str(octet) for octet in ip_list])
+                    else:
+                        ip_list[-3] += 1
+                        ip_list[-2] = 0
+                        ip_list[-1] = 0
+                        return '.'.join([str(octet) for octet in ip_list])
+                else:
+                    ip_list[-2] += 1
+                    ip_list[-1] = 0
+                    return '.'.join([str(octet) for octet in ip_list])
+            else:
+                ip_list[-1] += 1
+                return '.'.join([str(octet) for octet in ip_list])
+
+        elif upper_or_lower is 'lower':
+            if ip_list[-1] is 0:
+                if ip_list[-2] is 0:
+                    if ip_list[-3] is 0:
+                        if ip_list[-4] is 0:
+                            return ip
+                        else:
+                            ip_list[-4] -= 1
+                            ip_list[-3] = 255
+                            ip_list[-2] = 255
+                            ip_list[-1] = 255
+                            return '.'.join([str(octet) for octet in ip_list])
+                    else:
+                        ip_list[-3] -= 1
+                        ip_list[-2] = 255
+                        ip_list[-1] = 255
+                        return '.'.join([str(octet) for octet in ip_list])
+                else:
+                    ip_list[-2] -= 1
+                    ip_list[-1] = 255
+                    return '.'.join([str(octet) for octet in ip_list])
+            else:
+                ip_list[-1] -= 1
+                return '.'.join([str(octet) for octet in ip_list])
+        else:
+            raise ValueError('Invalid input: ' % upper_or_lower)
 
     def pop_highest(self) -> str:
         """
         Removes and returns the highest IP in the IP Range
         :return:
         """
-        pass
+        if not self._list: return ''
+        highest_ip: str
+        if type(self._list[-1]) is str:
+            highest_ip = self._list[-1]
+            del self._list[-1]
+            return highest_ip
+        if type(self._list[-1]) is tuple:
+            highest_ip = self._list[-1][1]
+            if IPRange._different_by_one(self._list[-1][0], self._list[-1][1]):
+                self._list[-1] = self._list[-1][0]
+                return highest_ip
+            self._list[-1] = list(self._list[-1])
+            self._list[-1][1] = IPRange.get_next_ip(self._list[-1][1], 'lower')
+            self._list[-1] = tuple(self._list[-1])
+            return highest_ip
 
     def peek_highest(self) -> str:
         """
         Returns the highest IP in the IP Range
         :return:
         """
-        pass
+        if not self._list: return ''
+        if type(self._list[-1]) is str: return self._list[-1]
+        if type(self._list[-1]) is tuple: return self._list[-1][1]
 
     def peek_lowest(self) -> str:
         """
         Returns the lowest IP in the IP Range
         :return:
         """
-        pass
+        if not self._list: return ''
+        if type(self._list[0]) is str: return self._list[0]
+        if type(self._list[0]) is tuple: return self._list[0][0]
 
     def eliminate_range(self, range: 'IPRange') -> bool:
         """

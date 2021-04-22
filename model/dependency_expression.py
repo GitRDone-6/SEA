@@ -1,5 +1,5 @@
 import enum
-from model import dependent_operand, operator
+from model import dependent_operand
 
 
 class DependencyExpression:
@@ -13,7 +13,7 @@ class DependencyExpression:
     """
 
     __dependent_operands: list[dependent_operand.DependentOperand]
-    __logical_operator: list[operator.Operator]
+    __logical_operators: list[str] = ['And', 'Or', 'Not']
 
     def __init__(self, dependency_expression_string: str):
         pass

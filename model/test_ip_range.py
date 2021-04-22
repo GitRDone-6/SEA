@@ -78,7 +78,36 @@ class TestIPRange(unittest.TestCase):
         '''
         TC2: Check when lower is greater than upper
         '''
-        self.assertRaises(ValueError, self.ip._check_valid_range(TestIPRange.HIGHEST_IP, TestIPRange.LOWEST_IP))
+        self.assertRaises(ValueError, self.ip._check_valid_range, TestIPRange.HIGHEST_IP, TestIPRange.LOWEST_IP)
+
+    def test_different_by_one(self):
+        """
+        Tests _different_by_one
+        :return:
+        """
+
+        '''
+        TC1: IF both IP's are the same, should return false.'''
+        self.assertFalse(self.ip._different_by_one('0.0.0.0', '0.0.0.0'))
+
+        '''
+        TC2: If the IP's are the edge IP's then return false'''
+        self.assertFalse(self.ip._different_by_one(TestIPRange.LOWEST_IP, TestIPRange.HIGHEST_IP))
+
+        '''
+        TC3: If the IP's are different by one in the last byte, return true'''
+        self.assertTrue(self.ip._different_by_one(TestIPRange.LOWEST_IP, '0.0.0.1'))
+
+        '''
+        TC4: If the first IP's last byte is 255 and the second IP's last byte is 0 and the other bytes are valid, return
+        true.'''
+        self.assertTrue(self.ip._different_by_one('127.0.0.255', '127.0.1.0'))
+
+        '''
+        TC5: If the other octets are not neighbors then return false'''
+        self.assertFalse(self.ip._different_by_one('127.0.0.0', '128.0.0.1'))
+        self.assertFalse(self.ip._different_by_one('127.0.0.0', '127.1.0.1'))
+        self.assertFalse(self.ip._different_by_one('127.0.0.0', '127.0.1.1'))
 
     def test_insert_range(self):
         """
@@ -120,12 +149,12 @@ class TestIPRange(unittest.TestCase):
         self.check_in_order_least_to_greatest(changed_version_list)
 
         '''
-        TC4: Insert a range that is logically completed excluded in the older version of the IP Range. The IP Range 
-        object should have a completely new element in its list that matches the given range therefore the length of the
-        list has grown by 1. The list will stay ordered from least to greatest. 
+        TC4: Insert a range that is logically completed excluded in the older version of the IP Range. The bounds are at
+        more that 1 difference. The IP Range object should have a completely new element in its list that matches the 
+        given range therefore the length of the list has grown by 1. The list will stay ordered from least to greatest. 
         '''
         old_version_list = changed_version_list
-        self.ip.insert_range('128.0.0.3', '129.0.0.0')
+        self.ip.insert_range('128.0.0.4', '129.0.0.0')
         changed_version_list = self.ip.get_list()
         self.assertEqual(len(old_version_list) + 1, len(changed_version_list))
         self.check_in_order_least_to_greatest(changed_version_list)
@@ -139,7 +168,7 @@ class TestIPRange(unittest.TestCase):
         self.ip.insert_range('126.0.0.0', '127.1.0.0')
         changed_version_list = self.ip.get_list()
         self.assertEqual(len(old_version_list), len(changed_version_list))
-        self.compare_range_less(old_version_list[0], changed_version_list[0])
+        self.compare_range_less(changed_version_list[0], old_version_list[0])
         self.check_in_order_least_to_greatest(changed_version_list)
 
         '''
@@ -167,7 +196,7 @@ class TestIPRange(unittest.TestCase):
         self.check_in_order_least_to_greatest(changed_version_list)
 
     def check_in_order_least_to_greatest(self, ip_range_list):
-        for index in range(len(ip_range_list)):
+        for index in range(len(ip_range_list)-1):
             prev = ip_range_list[index]
             nex_t = ip_range_list[index + 1]
             self.compare_range_less(prev, nex_t)
@@ -192,18 +221,23 @@ class TestIPRange(unittest.TestCase):
         TC1: Check if not mutually exclusive if they are the same list
         '''
         other_ip_range = ip_range.IPRange(TestIPRange.LOWER_IP, TestIPRange.UPPER_IP)
-        self.assertFalse(self.ip.is_mutually_exclusive(other_ip_range))
+        exclusive, index = self.ip.is_mutually_exclusive(other_ip_range)
+        self.assertFalse(exclusive)
+        self.assertEqual(0, index)
 
         '''
         TC2: Check if mutually exclusive'''
         other_ip_range = ip_range.IPRange('129.0.0.0', '130.0.0.0')
-        self.assertTrue(self.ip.is_mutually_exclusive(other_ip_range))
+        exclusive, index = self.ip.is_mutually_exclusive(other_ip_range)
+        self.assertTrue(exclusive)
+        self.assertIsNone(index)
 
         '''
         TC3: Check if only one element of the other range is not mutually exclusive'''
         other_ip_range.insert_ip(TestIPRange.HIGHEST_IP)
         self.ip.insert_ip(TestIPRange.HIGHEST_IP)
-        self.assertFalse(self.ip.is_mutually_exclusive(other_ip_range))
+        exclusive, index = self.ip.is_mutually_exclusive(other_ip_range)
+        self.assertFalse(exclusive)
 
     def test_get_list(self):
         """
