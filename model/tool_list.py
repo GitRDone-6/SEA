@@ -7,11 +7,12 @@ class ToolList:
     '''
     __tool_list: []
 
-    def __init__(self):
+    def __init__(self, collection):
         '''
         list of tools
         '''
         self.__tool_list = []
+        self.build_list(collection)
 
     def get_length(self):
         '''
@@ -68,5 +69,30 @@ class ToolList:
         '''
         return copy.deepcopy(self.__tool_list)
 
+    def build_list(self, collection):
+        '''
+        Builds the list upon initialization with all contents of the db
+        :param collection:
+        :return:
+        '''
+        for tool in collection:
+            new_tool = ToolConfiguration()
+            self.add_tool(new_tool.to_tool(tool))
 
-
+    def to_list(self, string):
+        '''
+        Takes list string and sanitizes string
+        :param list:
+        :return:
+        '''
+        print(type(string))
+        for i in string:
+            print(i)
+        '''
+        string = string.replace("\'", "")
+        string = string.replace(" ", "")
+        string = string.strip(' [] ')
+        new_list = string.split(",")
+        print(new_list)
+        '''
+        return string
