@@ -15,7 +15,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QAction, QWidget, QStackedWidget, QGridLayout, QSplitter, \
     QVBoxLayout, QStatusBar, QMenu, QMenuBar, QSizePolicy, QSpacerItem, QComboBox, QLineEdit, QLabel, QFrame, \
     QPlainTextEdit, QTableWidgetItem, QTableWidget, QTabWidget, QLayout, QMainWindow, QApplication, QInputDialog, \
-    QFileDialog
+    QFileDialog, QMessageBox
 from xml.etree import ElementTree
 from db.connect import Connect
 from xml.etree.ElementTree import Element, tostring
@@ -101,8 +101,8 @@ class Ui_MainWindow(object):
         Run list table starts
         '''
         self.table_run_list = QTableWidget(self.layoutWidget)
-        if (self.table_run_list.columnCount() < 4):
-            self.table_run_list.setColumnCount(4)
+        if (self.table_run_list.columnCount() < 5):
+            self.table_run_list.setColumnCount(5)
         __qtablewidgetitem = QTableWidgetItem()
         self.table_run_list.setHorizontalHeaderItem(0, __qtablewidgetitem)
         __qtablewidgetitem1 = QTableWidgetItem()
@@ -121,6 +121,7 @@ class Ui_MainWindow(object):
         self.table_run_list.verticalHeader().setProperty("showSortIndicator", False)
         self.table_run_list.verticalHeader().setStretchLastSection(False)
         self.verticalLayout.addWidget(self.table_run_list)
+        self.table_run_list.setColumnHidden(5, True)
         '''
         Need to populate the list with all of the saved runs from the database
         '''
@@ -1351,7 +1352,34 @@ class Ui_MainWindow(object):
                 self.QTable_tool_list.setItem(row, 2, item)
                 row += 1
 
+    def build_run_list_table(self):
+        query = {"_id": 1, "run_name": 1, "run_description": 1}
+        runs = self.db_connection.retrieve_collection('RUN', query)
+        row = 0
+        self.table_run_list.setRowCount(row)
+        for run in runs:
+            print(run)
+            row = self.table_run_list.rowCount()
+            self.table_run_list.setRowHeight(row, 25)
+            self.table_run_list.setRowCount(row + 1)
+
+            item = QTableWidgetItem(run["run_name"])
+            item.setFlags(Qt.ItemIsEnabled)
+            self.table_run_list.setItem(row, 0, item)
+
+            item = QTableWidgetItem(run["run_description"])
+            item.setFlags(Qt.ItemIsEnabled)
+            self.table_run_list.setItem(row, 1, item)
+
+            # TODO fix hidden _id col
+            item = QTableWidgetItem(str(run["_id"]))
+            item.setFlags(Qt.ItemIsEnabled)
+            self.table_run_list.setItem(row, 4, item)
+            row += 1
+
     def value_of_selected_row(self):
+
+
         row = self.QTable_tool_list.currentRow()
         col = self.QTable_tool_list.item(row, 0)
         text = col.text()
@@ -1404,6 +1432,7 @@ class Ui_MainWindow(object):
     def button_generate_report_on_click(self):
         # TODO add implementation
         print('button_generate_report_on_click')
+        self.__model.generate_report()
 
     def button_add_run_on_click(self):
         """
@@ -1429,6 +1458,13 @@ class Ui_MainWindow(object):
         """
         # TODO add implementation
         print('button_play_run_on_click')
+        run_selection = self.table_run_list.currentRow()
+        run_record_id = self.table_run_list.item(run_selection, 5)
+        self.db_connection.retrieve_data(run_record_id, 'RUN')
+        try:
+            self.__model.generate_execute_run_request(run_record_id)
+        except:
+            self.display_error('Play run failed.')
 
     def button_stop_run_on_click(self):
         """
@@ -1448,16 +1484,19 @@ class Ui_MainWindow(object):
         , it should also return them to run list. otherwise it may stay there.
         :return:
         """
-        #TODO Needs save implementation
+        print('button_save_run_config_on_click')
+        #Try
+        try:
+            self.__model.save_run_config(self.textline_run_name.text(),
+                                         self.textbox_run_desc.toPlainText(),
+                                         self.textbox_whitelist.toPlainText(),
+                                         self.textbox_blacklist.toPlainText())
+        except:
+            self.display_error('Did not save Run.')
+
         if self.__came_from_run_list:
             self.__came_from_run_list = False
             self.action_run_list_on_click()
-        print('button_save_run_config_on_click')
-        self.__model.save_run_config(self.textline_run_name.text(),
-                                     self.textbox_run_desc.toPlainText(),
-                                     self.textbox_whitelist.toPlainText(),
-                                     self.textbox_blacklist.toPlainText())
-
 
     def button_cancel_run_config_on_click(self):
         # TODO add implementation
@@ -1466,21 +1505,6 @@ class Ui_MainWindow(object):
             self.action_run_list_on_click()
         print('button_cancel_run_config_on_click')
 
-    '''
-    def set_model(self, mod: sea.SEA):
-        self.__model = mod
-        pass
-    '''
-
-    def run(self):
-        pass
-
-    def start(self):
-        app = QApplication([])
-        application = ThisWindow()
-        application.show()
-        sys.exit(app.exec())
-
     def update_table_run_list(self):
         """
         Updates the run config items.
@@ -1488,10 +1512,16 @@ class Ui_MainWindow(object):
         :param self:
         :return:
         """
-        pass
+        self.build_run_list_table()
 
     def insert_model(self, model):
         self.__model = model
+
+    def display_error(self, param):
+        self.ip_exclusivity_m_box = QMessageBox()
+        self.ip_exclusivity_m_box.setWindowTitle('Error')
+        self.ip_exclusivity_m_box.setText(param)
+        self.ip_exclusivity_m_box.exec_()
 
 
 class ThisWindow(QMainWindow):

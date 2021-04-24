@@ -5,6 +5,7 @@ from model.tool_list import ToolList
 from model.tool_configuration import ToolConfiguration
 
 
+
 class SEA():
     """
     There is a need for global attributes and responsibilities. This might be the main method.
@@ -36,13 +37,14 @@ class SEA():
         tool.set_tool_record_id(record_id)
         self.__tool_list.add_tool(tool)
 
-    def generate_execute_run_request(self, run_config):
+    def generate_execute_run_request(self, run_record_id: str):
         """
         Sends execute message to Run.
-        :param run_config:
+        :param run_record_id:
         :return:
         """
-        pass
+        self.__active_run_config = RunConfiguration(self.__db.retrieve_data('RUN', run_record_id))
+
 
     def generate_pause_run_request(self, run_config):
         """
@@ -86,14 +88,68 @@ class SEA():
         :return:
         """
 
-        self.__active_run_config = RunConfiguration()
-        self.__active_run_config.set_run_name(run_name).set_run_description(run_description).\
-            set_whitelist(whitelisted_ip).set_blacklist(blacklisted_ip)
-        self.__run_config_list.append(self.__active_run_config)
-        #Save to the DB
-        run_config_dict: dict = self.__active_run_config.to_dict()
-        record_id = self.__db.save_data(run_config_dict, 'RUN')
-        print(record_id)
+
+        '''Build the IP Ranges here.'''
+
+        white_iprange: IPRange = self.generate_ip_range(whitelisted_ip)
+        black_iprange: IPRange = self.generate_ip_range(blacklisted_ip)
+
+        '''Check for Exclusivity. If true, pass, else send message back to gui and do nothing.'''
+        if white_iprange.is_mutually_exclusive(black_iprange):
+
+            '''Check for Exclusivity. If true, pass, else send message back to gui and do nothing.'''
+            if white_iprange.is_mutually_exclusive(black_iprange):
+                #Do save and load to run list
+                self.__active_run_config = RunConfiguration()
+                self.__active_run_config.set_run_name(run_name).set_run_description(run_description). \
+                    set_whitelist(white_iprange).set_blacklist(black_iprange)
+                self.__run_config_list.append(self.__active_run_config)
+                # Save to the DB
+                run_config_dict: dict = self.__active_run_config.to_dict()
+                record_id = self.__db.save_data(run_config_dict, 'RUN')
+                print(record_id)
+            else:
+                #Send message to Controller
+                self.__controller.broadcast_error('Whitelist and Blacklist IP\'s not mutually exclusive.')
+                raise ValueError('IP\'s not exclusive')
+            #Do save and load to run list
+            self.__active_run_config = RunConfiguration()
+            self.__active_run_config.set_run_name(run_name).set_run_description(run_description). \
+                set_whitelist(white_iprange).set_blacklist(black_iprange)
+            self.__run_config_list.append(self.__active_run_config)
+            # Save to the DB
+            run_config_dict: dict = self.__active_run_config.to_dict()
+            record_id = self.__db.save_data(run_config_dict, 'RUN')
+            print(record_id)
+        else:
+            #Send message to Controller
+            self.__controller.broadcast_error('Whitelist and Blacklist IP\'s not mutually exclusive.')
+            raise ValueError('IP\'s not exclusive')
+
+    def generate_ip_range(self, whitelisted_ip: str) -> IPRange:
+        iprange: IPRange
+        ip_list: list[str] or list[tuple] = whitelisted_ip.splitlines()
+        for i in range(len(ip_list)):
+            if '-' in ip_list[i]:
+                split = ip_list[i].split('-')
+                ip_list[i] = (split[0], split[1])
+        first_range: str or tuple = ip_list.pop()
+        try:
+            if type(first_range) is str:
+                iprange = IPRange(first_range, first_range)
+            else:
+                iprange = IPRange(first_range[0], first_range[1])
+            for r in ip_list:
+                if type(r) is str:
+                    iprange.insert_ip(r)
+                elif type(r) is tuple:
+                    iprange.insert_range(r[0], r[1])
+            return iprange
+        except:
+            #Send message to controller that the IP's are formatted incorrectly
+            self.__controller.broadcast_error('IP\'s are not logically formatted. Must be least to greater.')
+
+        return None 
 
     def run(self):
         #TODO do implementation
@@ -105,3 +161,11 @@ class SEA():
 
     def set_controller(self, controller: Controller):
         self.__controller = controller
+
+    def generate_report(self):
+        """
+
+        :return:
+        """
+        pass
+

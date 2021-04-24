@@ -9,7 +9,7 @@ class WhitelistedIP(ip_range.IPRange):
     """
 
     def __init__(self, ip_list: list[tuple] or list[str]):
-        ip_range.IPRange.__init__(self)
+        ip_range.IPRange.__init__(self, '0.0.0.0', '0.0.0.0')
         self._list = ip_list
 
     '''
