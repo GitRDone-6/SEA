@@ -1,4 +1,5 @@
 from model import scan_state, tool_configuration
+from model.tool_configuration import ToolConfiguration
 
 
 class ScanConfiguration:
@@ -9,9 +10,11 @@ class ScanConfiguration:
     __scan_name: str
     __execution_number: int
     __scan_state: scan_state.ScanState
-    __tool_configuration: tool_configuration.ToolConfiguration
+    __tool_configuration: ToolConfiguration
 
-    def __init__(self):
+    def __init__(self, scan_identification: str = None):
+        if scan_identification:
+            self.__tool_configuration = ToolConfiguration(scan_identification)
         pass
 
     def scan_name(self) -> str:

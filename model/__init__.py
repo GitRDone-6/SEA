@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QApplication
 
 from model.sea import SEA
 from control.control import Controller
-from gui.ui_stacked import Ui_MainWindow, ThisWindow
+from gui.ui_stacked import ThisWindow
 
 def main():
     model = SEA()
@@ -15,8 +15,11 @@ def main():
     view = ThisWindow()
 
     view.ui_main.insert_model(model)
+    view.ui_main.update_tool_list()
     control.insert_gui(view.ui_main)
     model.set_controller(control)
+
+    view.ui_main.build_Tool_list_table()
 
     view.show()
     sys.exit(app.exec())

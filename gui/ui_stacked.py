@@ -15,14 +15,12 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QAction, QWidget, QStackedWidget, QGridLayout, QSplitter, \
     QVBoxLayout, QStatusBar, QMenu, QMenuBar, QSizePolicy, QSpacerItem, QComboBox, QLineEdit, QLabel, QFrame, \
     QPlainTextEdit, QTableWidgetItem, QTableWidget, QTabWidget, QLayout, QMainWindow, QApplication, QInputDialog, \
-    QFileDialog
+    QFileDialog, QMessageBox
 from xml.etree import ElementTree
 from db.connect import Connect
 from xml.etree.ElementTree import Element, tostring
 from gui.xml_handler import XmlDictConfig
 from bson.objectid import ObjectId
-from model.tool_list import ToolList
-from model.tool_configuration import ToolConfiguration
 import model
 
 
@@ -44,7 +42,7 @@ class Ui_MainWindow(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         self.db_connection = Connect()
-        self.tool_list = ToolList(self.db_connection.retrieve_collection('TOOL'))
+        self.__model = None
         MainWindow.resize(1100, 751)
         self.action_tool = QAction(MainWindow)
         self.action_tool.setObjectName(u"action_tool")
@@ -103,8 +101,8 @@ class Ui_MainWindow(object):
         Run list table starts
         '''
         self.table_run_list = QTableWidget(self.layoutWidget)
-        if (self.table_run_list.columnCount() < 4):
-            self.table_run_list.setColumnCount(4)
+        if (self.table_run_list.columnCount() < 5):
+            self.table_run_list.setColumnCount(5)
         __qtablewidgetitem = QTableWidgetItem()
         self.table_run_list.setHorizontalHeaderItem(0, __qtablewidgetitem)
         __qtablewidgetitem1 = QTableWidgetItem()
@@ -123,6 +121,7 @@ class Ui_MainWindow(object):
         self.table_run_list.verticalHeader().setProperty("showSortIndicator", False)
         self.table_run_list.verticalHeader().setStretchLastSection(False)
         self.verticalLayout.addWidget(self.table_run_list)
+        self.table_run_list.setColumnHidden(5, True)
         '''
         Need to populate the list with all of the saved runs from the database
         '''
@@ -604,7 +603,7 @@ class Ui_MainWindow(object):
 
         self.QTable_tool_list = QTableWidget(self.layoutWidget8)
         self.QTable_tool_list.setSelectionBehavior(QtWidgets.QTableWidget.SelectRows)
-        self.QTable_tool_list.setSelectionMode(QAbstractItemView.SingleSelection)
+        #self.QTable_tool_list.setSelectionMode(QAbstractItemView.SingleSelection)
         self.QTable_tool_list.setColumnCount(3)
         self.QTable_tool_list.setColumnHidden(2, True)
         if (self.QTable_tool_list.columnCount() < 2):
@@ -1255,18 +1254,18 @@ class Ui_MainWindow(object):
             w.write(tool_xml)
         print('pushbutton_export_tool_spec_file_on_click')
 
-    def get_tool_dialog(self):
+    def get_tool_dialog(self) -> list:
         '''
         Gets information in from tool configuration GUI dialog boxes
         :return: Tool object
         '''
-        tool = ToolConfiguration()
-        tool.set_name(self.lineedit_tool_name.text())                               # Tool Name
-        tool.set_description(self.plaintextedit_tool_description.toPlainText())     # Tool Description
-        tool.set_path(self.lineedit_tool_path.text())                               # Tool Path
-        tool.set_option_arg(self.tool_option_argument())                            # Tool option and argument
-        tool.set_output_data_spec(self.tool_output_data_spec())                     # Tool output data specification
-        return tool
+        tool_list = []
+        tool_list.append(self.lineedit_tool_name.text())                          # Tool Name
+        tool_list.append(self.plaintextedit_tool_description.toPlainText())     # Tool Description
+        tool_list.append(self.lineedit_tool_path.text())                               # Tool Path
+        tool_list.append(self.tool_option_argument())                            # Tool option and argument
+        tool_list.append(self.tool_output_data_spec())                     # Tool output data specification
+        return tool_list
 
     def tool_specification_browse_button_on_click(self):
         '''
@@ -1323,39 +1322,64 @@ class Ui_MainWindow(object):
 
     def save_button_on_click(self):
         #tool_configuration.ToolConfiguration.save_config()
-        tool = self.get_tool_dialog()
+        tool_details = self.get_tool_dialog()
+        self.__model.save_tool(tool_details[0], tool_details[1], tool_details[2], tool_details[3], tool_details[4])
         # record Tool information to db
-        record = tool.to_dict()
-        record_id = self.db_connection.save_data(record, 'TOOL')
-        tool.set_tool_record_id(record_id)
-        self.tool_list.add_tool(tool)
         self.build_Tool_list_table()
         # TODO add PATH def
         print('save_button_on_click')
 
     def build_Tool_list_table(self):
-        current_list = self.tool_list.tool_list()
-        print(current_list)
+        if self.__model:
+            current_list = self.__model.get_tool_list()
+            print(current_list)
+            row = 0
+            self.QTable_tool_list.setRowCount(row)
+            for tool in current_list:
+                row = self.QTable_tool_list.rowCount()
+                self.QTable_tool_list.setRowHeight(row, 25)
+                self.QTable_tool_list.setRowCount(row + 1)
+                item = QTableWidgetItem(tool.tool_name())
+                item.setFlags(Qt.ItemIsEnabled)
+                self.QTable_tool_list.setItem(row, 0, item)
+
+                item = QTableWidgetItem(tool.tool_description())
+                item.setFlags(Qt.ItemIsEnabled)
+                self.QTable_tool_list.setItem(row, 1, item)
+
+                item = QTableWidgetItem(str(tool.tool_record_id))
+                item.setFlags(Qt.ItemIsEnabled)
+                self.QTable_tool_list.setItem(row, 2, item)
+                row += 1
+
+    def build_run_list_table(self):
+        query = {"_id": 1, "run_name": 1, "run_description": 1}
+        runs = self.db_connection.retrieve_collection('RUN', query)
         row = 0
-        self.QTable_tool_list.setRowCount(row)
-        for tool in current_list:
-            row = self.QTable_tool_list.rowCount()
-            self.QTable_tool_list.setRowHeight(row, 25)
-            self.QTable_tool_list.setRowCount(row + 1)
-            item = QTableWidgetItem(tool.tool_name())
-            item.setFlags(Qt.ItemIsEnabled)
-            self.QTable_tool_list.setItem(row, 0, item)
+        self.table_run_list.setRowCount(row)
+        for run in runs:
+            print(run)
+            row = self.table_run_list.rowCount()
+            self.table_run_list.setRowHeight(row, 25)
+            self.table_run_list.setRowCount(row + 1)
 
-            item = QTableWidgetItem(tool.tool_description())
+            item = QTableWidgetItem(run["run_name"])
             item.setFlags(Qt.ItemIsEnabled)
-            self.QTable_tool_list.setItem(row, 1, item)
+            self.table_run_list.setItem(row, 0, item)
 
-            item = QTableWidgetItem(str(tool.tool_record_id))
+            item = QTableWidgetItem(run["run_description"])
             item.setFlags(Qt.ItemIsEnabled)
-            self.QTable_tool_list.setItem(row, 2, item)
+            self.table_run_list.setItem(row, 1, item)
+
+            # TODO fix hidden _id col
+            item = QTableWidgetItem(str(run["_id"]))
+            item.setFlags(Qt.ItemIsEnabled)
+            self.table_run_list.setItem(row, 4, item)
             row += 1
 
     def value_of_selected_row(self):
+
+
         row = self.QTable_tool_list.currentRow()
         col = self.QTable_tool_list.item(row, 0)
         text = col.text()
@@ -1408,6 +1432,7 @@ class Ui_MainWindow(object):
     def button_generate_report_on_click(self):
         # TODO add implementation
         print('button_generate_report_on_click')
+        self.__model.generate_report()
 
     def button_add_run_on_click(self):
         """
@@ -1433,6 +1458,13 @@ class Ui_MainWindow(object):
         """
         # TODO add implementation
         print('button_play_run_on_click')
+        run_selection = self.table_run_list.currentRow()
+        run_record_id = self.table_run_list.item(run_selection, 5)
+        self.db_connection.retrieve_data(run_record_id, 'RUN')
+        try:
+            self.__model.generate_execute_run_request(run_record_id)
+        except:
+            self.display_error('Play run failed.')
 
     def button_stop_run_on_click(self):
         """
@@ -1452,16 +1484,19 @@ class Ui_MainWindow(object):
         , it should also return them to run list. otherwise it may stay there.
         :return:
         """
-        #TODO Needs save implementation
+        print('button_save_run_config_on_click')
+        #Try
+        try:
+            self.__model.save_run_config(self.textline_run_name.text(),
+                                         self.textbox_run_desc.toPlainText(),
+                                         self.textbox_whitelist.toPlainText(),
+                                         self.textbox_blacklist.toPlainText())
+        except:
+            self.display_error('Did not save Run.')
+
         if self.__came_from_run_list:
             self.__came_from_run_list = False
             self.action_run_list_on_click()
-        print('button_save_run_config_on_click')
-        self.__model.save_run_config(self.textline_run_name.text(),
-                                     self.textbox_run_desc.toPlainText(),
-                                     self.textbox_whitelist.toPlainText(),
-                                     self.textbox_blacklist.toPlainText())
-
 
     def button_cancel_run_config_on_click(self):
         # TODO add implementation
@@ -1470,21 +1505,6 @@ class Ui_MainWindow(object):
             self.action_run_list_on_click()
         print('button_cancel_run_config_on_click')
 
-    '''
-    def set_model(self, mod: sea.SEA):
-        self.__model = mod
-        pass
-    '''
-
-    def run(self):
-        pass
-
-    def start(self):
-        app = QApplication([])
-        application = ThisWindow()
-        application.show()
-        sys.exit(app.exec())
-
     def update_table_run_list(self):
         """
         Updates the run config items.
@@ -1492,10 +1512,16 @@ class Ui_MainWindow(object):
         :param self:
         :return:
         """
-        pass
+        self.build_run_list_table()
 
     def insert_model(self, model):
         self.__model = model
+
+    def display_error(self, param):
+        self.ip_exclusivity_m_box = QMessageBox()
+        self.ip_exclusivity_m_box.setWindowTitle('Error')
+        self.ip_exclusivity_m_box.setText(param)
+        self.ip_exclusivity_m_box.exec_()
 
 
 class ThisWindow(QMainWindow):
