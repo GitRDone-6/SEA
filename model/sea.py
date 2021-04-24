@@ -1,8 +1,9 @@
 from db.connect import Connect
-from model.ip_range import IPRange
 from control.control import Controller
 from model.run_configuration import RunConfiguration
 from model.tool_list import ToolList
+from model.tool_configuration import ToolConfiguration
+
 
 
 class SEA():
@@ -11,16 +12,30 @@ class SEA():
     Can change.
     """
     __active_run_config: RunConfiguration
+    __run_config_list: list[RunConfiguration]
     __db: Connect
     __tool_list: ToolList
 
+
     def __init__(self):
         self.__db = Connect()
-        # Make tool list in here
-        self.__tool_list = ToolList()
+        self.__tool_list = ToolList(self.__db.retrieve_collection('TOOL'))
 
-    def get_tool_list_details(self):
-        return self.__tool_list
+    def get_tool_list(self) -> list:
+        return self.__tool_list.tool_list()
+
+    def save_tool(self, tool_name: str, tool_description: str, tool_path: str, tool_option_argument:list,
+                  output_data_spec: list):
+        tool = ToolConfiguration()
+        tool.set_name(tool_name)
+        tool.set_description(tool_description)
+        tool.set_path(tool_path)
+        tool.set_option_arg(tool_option_argument)
+        tool.set_output_data_spec(output_data_spec)
+        record = tool.to_dict()
+        record_id = self.__db.save_data(record, 'TOOL')
+        tool.set_tool_record_id(record_id)
+        self.__tool_list.add_tool(tool)
 
     def generate_execute_run_request(self, run_record_id: str):
         """
@@ -72,6 +87,7 @@ class SEA():
         :param blacklisted_ip:
         :return:
         """
+
 
         '''Build the IP Ranges here.'''
 
@@ -133,8 +149,7 @@ class SEA():
             #Send message to controller that the IP's are formatted incorrectly
             self.__controller.broadcast_error('IP\'s are not logically formatted. Must be least to greater.')
 
-        return None
-
+        return None 
 
     def run(self):
         #TODO do implementation
