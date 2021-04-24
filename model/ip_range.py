@@ -14,13 +14,16 @@ class IPRange:
     For the projects sake, we'll still construct our own data structure 3/23/21
     """
 
-    _list: list[tuple[str, str]] or list[str]
+    _list: list[tuple[str, str]] or list[str] = []
 
     def __init__(self, lower: str, upper: str, dictionary: dict = None):
-        self._check_valid_range(lower, upper)
-        self._list = [(lower, upper)]
         if dictionary:
             self._list = dictionary['ip_range_list']
+            self._list.sort()
+        else:
+            self._check_valid_range(lower, upper)
+            self.insert_range(lower, upper)
+
 
     @staticmethod
     def _check_valid_range(lower: str, upper: str) -> None:
@@ -414,7 +417,7 @@ class IPRange:
                 ip_list[-1] += 1
                 return '.'.join([str(octet) for octet in ip_list])
 
-        elif upper_or_lower is 'lower':
+        elif upper_or_lower == 'lower':
             if ip_list[-1] == 0:
                 if ip_list[-2] == 0:
                     if ip_list[-3] == 0:

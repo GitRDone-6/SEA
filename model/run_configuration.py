@@ -1,4 +1,8 @@
-from model import run_state, target, scan_configuration, ip_range
+from model.ip_range import IPRange
+from model.run_state import RunState
+from model.target import Target
+from model.scan_configuration import ScanConfiguration
+
 
 class RunConfiguration:
     """
@@ -7,12 +11,19 @@ class RunConfiguration:
 
     __run_name: str
     __run_description: str
-    __run_state: run_state.RunState
-    __target: target.Target
-    __scan_configurations: list[scan_configuration.ScanConfiguration]
+    __run_state: RunState
+    __target: Target
+    __scan_configurations: list[ScanConfiguration] = []
 
-    def __init__(self):
-        pass
+    def __init__(self, dictionary: dict = None):
+        if dictionary:
+            self.__run_name = dictionary['run_name']
+            self.__run_description = dictionary['run_description']
+            self.__target = Target(dictionary['run_target'])
+            for scan_id in dictionary['scan_configuration_ids']:
+                self.__scan_configurations.append(ScanConfiguration(scan_id))
+        self.__target = Target()
+        #self.__run_state = RunState()
 
     def set_run_name(self, name: str) -> 'RunConfiguration':
         self.__run_name = name
@@ -22,46 +33,12 @@ class RunConfiguration:
         self.__run_description = desc
         return self
 
-    def set_whitelist(self, white_list: str) -> 'RunConfiguration':
-        #Please refer to IP Range! or this is all nonsense
-        ip_list: list[str] or list[tuple] = white_list.splitlines()
-        for i in range(len(ip_list)):
-            if '-' in ip_list[i]:
-                split = ip_list[i].split('-')
-                ip_list[i] = (split[0], split[1])
-        first_range: str or tuple = ip_list.pop()
-        iprange: ip_range.IPRange
-        if type(first_range) is str:
-            iprange = ip_range.IPRange(first_range, first_range)
-        else:
-            iprange = ip_range.IPRange(first_range[0], first_range[1])
-        for r in ip_list:
-            if type(r) is str:
-                iprange.insert_ip(r)
-            elif type(r) is tuple:
-                iprange.insert_range(r[0], r[1])
-        self.__target.set_whitelist(iprange)
+    def set_whitelist(self, white_range: IPRange) -> 'RunConfiguration':
+        self.__target.set_whitelist(white_range)
         return self
 
-    def set_blacklist(self, black_list: str) -> 'RunConfiguration':
-        # Please refer to IP Range! or this is all nonsense
-        ip_list: list[str] or list[tuple] = black_list.splitlines()
-        for i in range(len(ip_list)):
-            if '-' in ip_list[i]:
-                split = ip_list[i].split('-')
-                ip_list[i] = (split[0], split[1])
-        first_range: str or tuple = ip_list.pop()
-        iprange: ip_range.IPRange
-        if type(first_range) is str:
-            iprange = ip_range.IPRange(first_range, first_range)
-        else:
-            iprange = ip_range.IPRange(first_range[0], first_range[1])
-        for r in ip_list:
-            if type(r) is str:
-                iprange.insert_ip(r)
-            elif type(r) is tuple:
-                iprange.insert_range(r[0], r[1])
-        self.__target.set_blacklist(iprange)
+    def set_blacklist(self, black_range: IPRange) -> 'RunConfiguration':
+        self.__target.set_blacklist(black_range)
         return self
 
     def run_name(self) -> str:
@@ -70,13 +47,13 @@ class RunConfiguration:
     def run_description(self) -> str:
         return self.__run_description
 
-    def run_state(self) -> run_state.RunState:
+    def run_state(self) -> RunState:
         return self.__run_state
 
-    def target(self) -> target.Target:
+    def target(self) -> Target:
         return self.__target
 
-    def scan_configurations(self) -> list[scan_configuration.ScanConfiguration]:
+    def scan_configurations(self) -> list[ScanConfiguration]:
         return self.__scan_configurations
 
     def __verify_target(self) -> bool:
