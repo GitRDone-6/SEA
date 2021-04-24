@@ -21,8 +21,6 @@ from db.connect import Connect
 from xml.etree.ElementTree import Element, tostring
 from gui.xml_handler import XmlDictConfig
 from bson.objectid import ObjectId
-from model.tool_list import ToolList
-from model.tool_configuration import ToolConfiguration
 import model
 
 
@@ -44,7 +42,7 @@ class Ui_MainWindow(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         self.db_connection = Connect()
-        self.tool_list = ToolList(self.db_connection.retrieve_collection('TOOL'))
+        self.__model = None
         MainWindow.resize(1100, 751)
         self.action_tool = QAction(MainWindow)
         self.action_tool.setObjectName(u"action_tool")
@@ -604,7 +602,7 @@ class Ui_MainWindow(object):
 
         self.QTable_tool_list = QTableWidget(self.layoutWidget8)
         self.QTable_tool_list.setSelectionBehavior(QtWidgets.QTableWidget.SelectRows)
-        self.QTable_tool_list.setSelectionMode(QAbstractItemView.SingleSelection)
+        #self.QTable_tool_list.setSelectionMode(QAbstractItemView.SingleSelection)
         self.QTable_tool_list.setColumnCount(3)
         self.QTable_tool_list.setColumnHidden(2, True)
         if (self.QTable_tool_list.columnCount() < 2):
@@ -1255,18 +1253,18 @@ class Ui_MainWindow(object):
             w.write(tool_xml)
         print('pushbutton_export_tool_spec_file_on_click')
 
-    def get_tool_dialog(self):
+    def get_tool_dialog(self) -> list:
         '''
         Gets information in from tool configuration GUI dialog boxes
         :return: Tool object
         '''
-        tool = ToolConfiguration()
-        tool.set_name(self.lineedit_tool_name.text())                               # Tool Name
-        tool.set_description(self.plaintextedit_tool_description.toPlainText())     # Tool Description
-        tool.set_path(self.lineedit_tool_path.text())                               # Tool Path
-        tool.set_option_arg(self.tool_option_argument())                            # Tool option and argument
-        tool.set_output_data_spec(self.tool_output_data_spec())                     # Tool output data specification
-        return tool
+        tool_list = []
+        tool_list.append(self.lineedit_tool_name.text())                          # Tool Name
+        tool_list.append(self.plaintextedit_tool_description.toPlainText())     # Tool Description
+        tool_list.append(self.lineedit_tool_path.text())                               # Tool Path
+        tool_list.append(self.tool_option_argument())                            # Tool option and argument
+        tool_list.append(self.tool_output_data_spec())                     # Tool output data specification
+        return tool_list
 
     def tool_specification_browse_button_on_click(self):
         '''
@@ -1323,37 +1321,35 @@ class Ui_MainWindow(object):
 
     def save_button_on_click(self):
         #tool_configuration.ToolConfiguration.save_config()
-        tool = self.get_tool_dialog()
+        tool_details = self.get_tool_dialog()
+        self.__model.save_tool(tool_details[0], tool_details[1], tool_details[2], tool_details[3], tool_details[4])
         # record Tool information to db
-        record = tool.to_dict()
-        record_id = self.db_connection.save_data(record, 'TOOL')
-        tool.set_tool_record_id(record_id)
-        self.tool_list.add_tool(tool)
         self.build_Tool_list_table()
         # TODO add PATH def
         print('save_button_on_click')
 
     def build_Tool_list_table(self):
-        current_list = self.tool_list.tool_list()
-        print(current_list)
-        row = 0
-        self.QTable_tool_list.setRowCount(row)
-        for tool in current_list:
-            row = self.QTable_tool_list.rowCount()
-            self.QTable_tool_list.setRowHeight(row, 25)
-            self.QTable_tool_list.setRowCount(row + 1)
-            item = QTableWidgetItem(tool.tool_name())
-            item.setFlags(Qt.ItemIsEnabled)
-            self.QTable_tool_list.setItem(row, 0, item)
+        if self.__model:
+            current_list = self.__model.get_tool_list()
+            print(current_list)
+            row = 0
+            self.QTable_tool_list.setRowCount(row)
+            for tool in current_list:
+                row = self.QTable_tool_list.rowCount()
+                self.QTable_tool_list.setRowHeight(row, 25)
+                self.QTable_tool_list.setRowCount(row + 1)
+                item = QTableWidgetItem(tool.tool_name())
+                item.setFlags(Qt.ItemIsEnabled)
+                self.QTable_tool_list.setItem(row, 0, item)
 
-            item = QTableWidgetItem(tool.tool_description())
-            item.setFlags(Qt.ItemIsEnabled)
-            self.QTable_tool_list.setItem(row, 1, item)
+                item = QTableWidgetItem(tool.tool_description())
+                item.setFlags(Qt.ItemIsEnabled)
+                self.QTable_tool_list.setItem(row, 1, item)
 
-            item = QTableWidgetItem(str(tool.tool_record_id))
-            item.setFlags(Qt.ItemIsEnabled)
-            self.QTable_tool_list.setItem(row, 2, item)
-            row += 1
+                item = QTableWidgetItem(str(tool.tool_record_id))
+                item.setFlags(Qt.ItemIsEnabled)
+                self.QTable_tool_list.setItem(row, 2, item)
+                row += 1
 
     def value_of_selected_row(self):
         row = self.QTable_tool_list.currentRow()

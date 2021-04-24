@@ -40,13 +40,13 @@ class ToolConfiguration:
     def tool_path(self) -> str:
         return self.__tool_path
 
-    def set_option_arg(self, option_arg):
+    def set_option_arg(self, option_arg: list):
         self.__tool_option_arg = option_arg
 
     def tool_option_arg(self) -> list:
         return copy.deepcopy(self.__tool_option_arg)
 
-    def set_output_data_spec(self, output_data_spec):
+    def set_output_data_spec(self, output_data_spec: list):
         self.__tool_output_data_spec = output_data_spec
 
     def tool_output_data_spec(self) -> list:

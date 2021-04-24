@@ -18,6 +18,8 @@ def main():
     control.insert_gui(view.ui_main)
     model.set_controller(control)
 
+    view.ui_main.build_Tool_list_table()
+
     view.show()
     sys.exit(app.exec())
 

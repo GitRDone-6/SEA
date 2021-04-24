@@ -1,6 +1,8 @@
-from db import connect
-import run_configuration
+from db.connect import Connect
 from control.control import Controller
+from model.run_configuration import RunConfiguration
+from model.tool_list import ToolList
+from model.tool_configuration import ToolConfiguration
 
 
 class SEA():
@@ -8,13 +10,31 @@ class SEA():
     There is a need for global attributes and responsibilities. This might be the main method.
     Can change.
     """
-    __active_run_config: run_configuration.RunConfiguration
-    __run_config_list: list[run_configuration.RunConfiguration]
-    __db: connect.Connect()
+    __active_run_config: RunConfiguration
+    __run_config_list: list[RunConfiguration]
+    __db: Connect
+    __tool_list: ToolList
 
 
     def __init__(self):
-        pass
+        self.__db = Connect()
+        self.__tool_list = ToolList(self.__db.retrieve_collection('TOOL'))
+
+    def get_tool_list(self) -> list:
+        return self.__tool_list.tool_list()
+
+    def save_tool(self, tool_name: str, tool_description: str, tool_path: str, tool_option_argument:list,
+                  output_data_spec: list):
+        tool = ToolConfiguration()
+        tool.set_name(tool_name)
+        tool.set_description(tool_description)
+        tool.set_path(tool_path)
+        tool.set_option_arg(tool_option_argument)
+        tool.set_output_data_spec(output_data_spec)
+        record = tool.to_dict()
+        record_id = self.__db.save_data(record, 'TOOL')
+        tool.set_tool_record_id(record_id)
+        self.__tool_list.add_tool(tool)
 
     def generate_execute_run_request(self, run_config):
         """
@@ -66,7 +86,7 @@ class SEA():
         :return:
         """
 
-        self.__active_run_config = run_configuration.RunConfiguration()
+        self.__active_run_config = RunConfiguration()
         self.__active_run_config.set_run_name(run_name).set_run_description(run_description).\
             set_whitelist(whitelisted_ip).set_blacklist(blacklisted_ip)
         self.__run_config_list.append(self.__active_run_config)
