@@ -63,3 +63,12 @@ class ToolConfiguration:
                 "Tool_Path" : self.tool_path(),
                 "Option_Argument" : self.tool_option_arg(),
                 "Output_Data_Specification" : self.tool_output_data_spec()}
+
+    def to_tool(self, dictionary):
+        self.set_tool_record_id(dictionary["_id"])
+        self.set_name(dictionary["Tool_Name"])
+        self.set_description(dictionary["Tool_Description"])
+        self.set_path(dictionary["Tool_Path"])
+        self.set_option_arg(dictionary["Option_Argument"])
+        self.set_output_data_spec(dictionary["Output_Data_Specification"])
+        return self
