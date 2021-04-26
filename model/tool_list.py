@@ -6,6 +6,7 @@ class ToolList:
     Contains and Modifies a list of Tool Objects
     '''
     __tool_list: []
+    __index: int
 
     def __init__(self, collection):
         '''
@@ -13,6 +14,7 @@ class ToolList:
         '''
         self.__tool_list = []
         self.build_list(collection)
+        self.__index = 0
 
     def get_length(self):
         '''
@@ -96,3 +98,19 @@ class ToolList:
         print(new_list)
         '''
         return string
+
+    def exists(self, tool_name: str, tool_description: str, tool_path: str, tool_option_argument:list,
+                  output_data_spec: list):
+        '''
+        Checks if target tool already exists within the tool list
+        :param target:
+        :return:
+        '''
+        for tool in self.__tool_list:
+            if (tool.tool_name() == tool_name or
+                (tool.tool_description() == tool_description and
+                tool.tool_path() == tool_path and
+                tool.tool_option_arg() == tool_option_argument and
+                tool.tool_output_data_spec() == output_data_spec)):
+                return True
+        return False

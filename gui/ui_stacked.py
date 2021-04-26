@@ -120,8 +120,11 @@ class Ui_MainWindow(object):
         self.table_run_list.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.table_run_list.verticalHeader().setProperty("showSortIndicator", False)
         self.table_run_list.verticalHeader().setStretchLastSection(False)
+        # TODO FIX
+        self.table_run_list.setSelectionBehavior(QtWidgets.QTableWidget.SelectRows)
+        self.table_run_list.setSelectionMode(QtWidgets.QTableWidget.SingleSelection)
+        self.table_run_list.setColumnHidden(4, True)
         self.verticalLayout.addWidget(self.table_run_list)
-        self.table_run_list.setColumnHidden(5, True)
         '''
         Need to populate the list with all of the saved runs from the database
         '''
@@ -602,8 +605,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_20.addWidget(self.tool_list_title)
 
         self.QTable_tool_list = QTableWidget(self.layoutWidget8)
-        self.QTable_tool_list.setSelectionBehavior(QtWidgets.QTableWidget.SelectRows)
-        #self.QTable_tool_list.setSelectionMode(QAbstractItemView.SingleSelection)
         self.QTable_tool_list.setColumnCount(3)
         self.QTable_tool_list.setColumnHidden(2, True)
         if (self.QTable_tool_list.columnCount() < 2):
@@ -637,7 +638,8 @@ class Ui_MainWindow(object):
         self.QTable_tool_list.verticalHeader().setHighlightSections(True)
         self.QTable_tool_list.verticalHeader().setProperty("showSortIndicator", True)
         self.QTable_tool_list.verticalHeader().setStretchLastSection(False)
-
+        self.QTable_tool_list.setSelectionBehavior(QtWidgets.QTableView.SelectRows)
+        self.QTable_tool_list.setSelectionMode(QtWidgets.QTableView.SingleSelection)
 
         self.verticalLayout_20.addWidget(self.QTable_tool_list)
 
@@ -764,13 +766,13 @@ class Ui_MainWindow(object):
         self.plaintextedit_tool_option_argument.setObjectName(u"plaintextedit_tool_option_argument")
 
         self.horizontalLayout_16.addWidget(self.plaintextedit_tool_option_argument)
-
+        '''
         self.button_option_argument_add = QPushButton(self.layoutWidget13)
         self.button_option_argument_add.setObjectName(u"button_option_argument_add")
         self.button_option_argument_add.clicked.connect(self.button_option_argument_add_on_click)
 
         self.horizontalLayout_16.addWidget(self.button_option_argument_add)
-
+        '''
         self.splitter_7.addWidget(self.layoutWidget13)
         self.layoutWidget14 = QWidget(self.splitter_7)
         self.layoutWidget14.setObjectName(u"layoutWidget14")
@@ -786,13 +788,13 @@ class Ui_MainWindow(object):
         self.plaintextedit_tool_data_specification.setObjectName(u"plaintextedit_tool_data_specification")
 
         self.horizontalLayout_17.addWidget(self.plaintextedit_tool_data_specification)
-
+        '''
         self.button_output_data_add = QPushButton(self.layoutWidget14)
         self.button_output_data_add.setObjectName(u"button_output_data_add")
         self.button_output_data_add.clicked.connect(self.button_output_data_add_on_click)
-
+        
         self.horizontalLayout_17.addWidget(self.button_output_data_add)
-
+        '''
         self.splitter_7.addWidget(self.layoutWidget14)
 
         self.verticalLayout_21.addWidget(self.splitter_7)
@@ -1115,9 +1117,9 @@ class Ui_MainWindow(object):
         self.label_tool_path.setText(QCoreApplication.translate("MainWindow", u"Tool Path:", None))
         self.button_tool_path_browse.setText(QCoreApplication.translate("MainWindow", u"Browse", None))
         self.label_option_argument.setText(QCoreApplication.translate("MainWindow", u"Option and Argument: ", None))
-        self.button_option_argument_add.setText(QCoreApplication.translate("MainWindow", u"Add", None))
+        #self.button_option_argument_add.setText(QCoreApplication.translate("MainWindow", u"Add", None))
         self.label_output_data.setText(QCoreApplication.translate("MainWindow", u"Output Data Specification: ", None))
-        self.button_output_data_add.setText(QCoreApplication.translate("MainWindow", u"Add", None))
+        #self.button_output_data_add.setText(QCoreApplication.translate("MainWindow", u"Add", None))
         self.pushbutton_export_tool_spec_file.setText(
             QCoreApplication.translate("MainWindow", u"Export as Tool Specification File...", None))
         self.tool_specification_OR_label.setText(QCoreApplication.translate("MainWindow", u"OR", None))
@@ -1194,7 +1196,7 @@ class Ui_MainWindow(object):
     def pushbutton_delete_tool_on_click(self):
         # TODO add implementation
         tool_name = self.value_of_selected_row()
-        self.tool_list.remove_tool(tool_name)
+        self.__model.delete_tool(tool_name)
         self.build_Tool_list_table()
         print('pushbutton_delete_tool_on_click')
 
@@ -1378,8 +1380,6 @@ class Ui_MainWindow(object):
             row += 1
 
     def value_of_selected_row(self):
-
-
         row = self.QTable_tool_list.currentRow()
         col = self.QTable_tool_list.item(row, 0)
         text = col.text()

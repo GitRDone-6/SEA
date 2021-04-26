@@ -15,7 +15,6 @@ def main():
     view = ThisWindow()
 
     view.ui_main.insert_model(model)
-    view.ui_main.update_tool_list()
     control.insert_gui(view.ui_main)
     model.set_controller(control)
 
