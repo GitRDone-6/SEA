@@ -16,11 +16,10 @@ from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QAction, QWidget, QStacked
     QVBoxLayout, QStatusBar, QMenu, QMenuBar, QSizePolicy, QSpacerItem, QComboBox, QLineEdit, QLabel, QFrame, \
     QPlainTextEdit, QTableWidgetItem, QTableWidget, QTabWidget, QLayout, QMainWindow, QApplication, QInputDialog, \
     QFileDialog, QMessageBox
-from xml.etree import ElementTree
 from db.connect import Connect
-from xml.etree.ElementTree import Element, tostring
-from gui.xml_handler import XmlDictConfig
-from bson.objectid import ObjectId
+#from xml.etree.ElementTree import Element, tostring
+#from gui.xml_handler import XmlDictConfig
+#from bson.objectid import ObjectId
 import model
 
 
@@ -638,8 +637,8 @@ class Ui_MainWindow(object):
         self.QTable_tool_list.verticalHeader().setHighlightSections(True)
         self.QTable_tool_list.verticalHeader().setProperty("showSortIndicator", True)
         self.QTable_tool_list.verticalHeader().setStretchLastSection(False)
-        self.QTable_tool_list.setSelectionBehavior(QtWidgets.QTableView.SelectRows)
-        self.QTable_tool_list.setSelectionMode(QtWidgets.QTableView.SingleSelection)
+        self.QTable_tool_list.setSelectionBehavior(QTableWidget.SelectRows)
+        self.QTable_tool_list.setSelectionMode(QTableWidget.SingleSelection)
 
         self.verticalLayout_20.addWidget(self.QTable_tool_list)
 
@@ -674,6 +673,12 @@ class Ui_MainWindow(object):
         self.pushbutton_move_down.clicked.connect(self.pushbutton_move_down_on_click)
 
         self.horizontalLayout_9.addWidget(self.pushbutton_move_down)
+
+        self.pushbutton_export_tool_spec_file = QPushButton(self.layoutWidget8)
+        self.pushbutton_export_tool_spec_file.setObjectName(u"pushbutton_export_tool_spec_file")
+        self.pushbutton_export_tool_spec_file.clicked.connect(self.pushbutton_export_tool_spec_file_on_click)
+
+        self.horizontalLayout_9.addWidget(self.pushbutton_export_tool_spec_file)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
@@ -798,13 +803,13 @@ class Ui_MainWindow(object):
         self.splitter_7.addWidget(self.layoutWidget14)
 
         self.verticalLayout_21.addWidget(self.splitter_7)
-
+        '''
         self.pushbutton_export_tool_spec_file = QPushButton(self.layoutWidget9)
         self.pushbutton_export_tool_spec_file.setObjectName(u"pushbutton_export_tool_spec_file")
         self.pushbutton_export_tool_spec_file.clicked.connect(self.pushbutton_export_tool_spec_file_on_click)
 
         self.verticalLayout_21.addWidget(self.pushbutton_export_tool_spec_file)
-
+        '''
         self.tool_specification_OR_label = QLabel(self.layoutWidget9)
         self.tool_specification_OR_label.setObjectName(u"tool_specification_OR_label")
         self.tool_specification_OR_label.setAlignment(Qt.AlignCenter)
@@ -1121,7 +1126,7 @@ class Ui_MainWindow(object):
         self.label_output_data.setText(QCoreApplication.translate("MainWindow", u"Output Data Specification: ", None))
         #self.button_output_data_add.setText(QCoreApplication.translate("MainWindow", u"Add", None))
         self.pushbutton_export_tool_spec_file.setText(
-            QCoreApplication.translate("MainWindow", u"Export as Tool Specification File...", None))
+            QCoreApplication.translate("MainWindow", u"Export Tool...", None))
         self.tool_specification_OR_label.setText(QCoreApplication.translate("MainWindow", u"OR", None))
         self.tool_specification_file_input.setText("")
         self.tool_specification_file_input.setPlaceholderText(
@@ -1222,14 +1227,6 @@ class Ui_MainWindow(object):
                                                 options=option)
         return file_path
 
-    def dict_to_xml(self, tag, dictionary):
-        elem = Element(tag)
-        for key, val in dictionary.items():
-            child = Element(key)
-            child.text = str(val)
-            elem.append(child)
-        return elem
-
     def button_option_argument_add_on_click(self):
         # TODO add implementation
         print('button_option_argument_add_on_click')
@@ -1242,32 +1239,25 @@ class Ui_MainWindow(object):
         '''
         Saves Tool Configuration to an .xml file
         '''
-        # Retrieve designated save path
-        path = self.openSaveDialog()
-        # Get dialog from gui in form of a Tool Object
-        tool_info = self.get_tool_dialog()
-        # Turns Tool Object to dict
-        tool_dictionary = tool_info.to_dict()
-        # Turns dict into xml format
-        xml = self.dict_to_xml('Tool', tool_dictionary)
-        tool_xml = ElementTree.tostring(xml, encoding='unicode', method='xml')
-        # Saves xml String to the given path
-        with open(path, 'w') as w:
-            w.write(tool_xml)
+        tool_name = self.value_of_selected_row()
+        if tool_name is not None:
+            # Retrieve designated save path
+            path = self.openSaveDialog()
+            self.__model.export_tool(path, tool_name)
         print('pushbutton_export_tool_spec_file_on_click')
 
-    def get_tool_dialog(self) -> list:
+    def get_tool_dialog(self):
         '''
         Gets information in from tool configuration GUI dialog boxes
         :return: Tool object
         '''
-        tool_list = []
-        tool_list.append(self.lineedit_tool_name.text())                          # Tool Name
-        tool_list.append(self.plaintextedit_tool_description.toPlainText())     # Tool Description
-        tool_list.append(self.lineedit_tool_path.text())                               # Tool Path
-        tool_list.append(self.tool_option_argument())                            # Tool option and argument
-        tool_list.append(self.tool_output_data_spec())                     # Tool output data specification
-        return tool_list
+        tool_name = self.lineedit_tool_name.text()
+        tool_description = self.plaintextedit_tool_description.toPlainText()
+        tool_path = self.lineedit_tool_path.text()
+        option_argument = self.tool_option_argument()
+        output_data = self.tool_output_data_spec()
+        return [tool_name, tool_description, tool_path, option_argument, output_data]
+
 
     def tool_specification_browse_button_on_click(self):
         '''
@@ -1278,7 +1268,7 @@ class Ui_MainWindow(object):
         # sets path chosen into line edit text box
         self.tool_specification_file_input.setText(path)
         # turns xml file into dictionary
-        dictionary = self.xml_to_dict(path)
+        dictionary = self.__model.xml_to_dict(path)
         # sets the text into gui dialog from dictionary
         self.set_tool_dialog(dictionary)
         print('tool_specification_browse_button_on_click')
@@ -1289,23 +1279,12 @@ class Ui_MainWindow(object):
         :param tool_dictionary:
         :return:
         '''
-        option_argument_string = self.list_to_string(tool_dictionary["Option_Argument"])
+        option_argument_string = self.__model.list_to_string(tool_dictionary["Option_Argument"])
         self.lineedit_tool_name.setText(tool_dictionary["Tool_Name"])
         self.plaintextedit_tool_description.setPlainText(tool_dictionary["Tool_Description"])
         self.lineedit_tool_path.setText(tool_dictionary["Tool_Path"])
         self.plaintextedit_tool_option_argument.setPlainText(option_argument_string)
-        self.plaintextedit_tool_data_specification.setPlainText(self.list_to_string(tool_dictionary["Output_Data_Specification"]))
-
-    def xml_to_dict(self, xml_file):
-        '''
-        Takes xml file and converts it into a dictionary
-        :param xml_file: path to xml file
-        :return: converted dictionary
-        '''
-        parser = ElementTree.XMLParser(encoding="utf-8")
-        tree = ElementTree.parse(xml_file, parser=parser)
-        root = tree.getroot()
-        return XmlDictConfig(root)
+        self.plaintextedit_tool_data_specification.setPlainText(self.__model.list_to_string(tool_dictionary["Output_Data_Specification"]))
 
     def browse_file(self, file_option = 'Single File', file_extension = '*.xml'):
         file_path, _ = QFileDialog.getOpenFileName(None, file_option, '', file_extension)
@@ -1323,12 +1302,11 @@ class Ui_MainWindow(object):
         print('pushbutton_add_tool_specification_on_click')
 
     def save_button_on_click(self):
-        #tool_configuration.ToolConfiguration.save_config()
-        tool_details = self.get_tool_dialog()
-        self.__model.save_tool(tool_details[0], tool_details[1], tool_details[2], tool_details[3], tool_details[4])
-        # record Tool information to db
+        input_list = self.get_tool_dialog()
+        if (self.__model.validate_input(input_list)):
+            self.__model.save_tool(input_list[0],input_list[1],input_list[2],input_list[3],input_list[4])
         self.build_Tool_list_table()
-        # TODO add PATH def
+        self.clear_text_dialog()
         print('save_button_on_click')
 
     def build_Tool_list_table(self):
@@ -1381,6 +1359,10 @@ class Ui_MainWindow(object):
 
     def value_of_selected_row(self):
         row = self.QTable_tool_list.currentRow()
+        print("current row selected = ", row)
+        if row == -1:
+            self.__model.broadcast_error("Error: No Row Selected!")
+            return None
         col = self.QTable_tool_list.item(row, 0)
         text = col.text()
         return text

@@ -6,7 +6,6 @@ class ToolList:
     Contains and Modifies a list of Tool Objects
     '''
     __tool_list: []
-    __index: int
 
     def __init__(self, collection):
         '''
@@ -14,7 +13,6 @@ class ToolList:
         '''
         self.__tool_list = []
         self.build_list(collection)
-        self.__index = 0
 
     def get_length(self):
         '''
@@ -80,24 +78,6 @@ class ToolList:
         for tool in collection:
             new_tool = ToolConfiguration()
             self.add_tool(new_tool.to_tool(tool))
-
-    def to_list(self, string):
-        '''
-        Takes list string and sanitizes string
-        :param list:
-        :return:
-        '''
-        print(type(string))
-        for i in string:
-            print(i)
-        '''
-        string = string.replace("\'", "")
-        string = string.replace(" ", "")
-        string = string.strip(' [] ')
-        new_list = string.split(",")
-        print(new_list)
-        '''
-        return string
 
     def exists(self, tool_name: str, tool_description: str, tool_path: str, tool_option_argument:list,
                   output_data_spec: list):
