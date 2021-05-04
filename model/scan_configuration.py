@@ -1,6 +1,8 @@
 from model import scan_state, tool_configuration
 from model.tool_configuration import ToolConfiguration
 import subprocess
+import threading
+import logging
 
 
 class ScanConfiguration:
@@ -57,3 +59,7 @@ class ScanConfiguration:
         :return:
         """
         #self.process.terminate()
+
+    def start_thread(self):
+        self.scan_thread = threading.Thread(target=self.execute_())
+        self.scan_thread.start()

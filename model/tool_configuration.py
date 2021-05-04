@@ -63,13 +63,13 @@ class ToolConfiguration:
     '''
 
     def to_dict(self):
-        return {"Tool_Name" : self.tool_name(),
-                "Tool_Description" : self.tool_description(),
-                "Tool_Path" : self.tool_path(),
-                "Option_Argument" : self.tool_option_arg(),
-                "Output_Data_Specification" : self.tool_output_data_spec()}
+        return {"Tool_Name": self.tool_name(),
+                "Tool_Description": self.tool_description(),
+                "Tool_Path": self.tool_path(),
+                "Option_Argument": self.tool_option_arg(),
+                "Output_Data_Specification": self.tool_output_data_spec()}
 
-    def to_tool(self, dictionary):
+    def to_tool(self, dictionary: dict):
         self.set_tool_record_id(dictionary["_id"])
         self.set_name(dictionary["Tool_Name"])
         self.set_description(dictionary["Tool_Description"])

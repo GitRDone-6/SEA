@@ -3,6 +3,11 @@ from control.control import Controller
 from model.run_configuration import RunConfiguration
 from model.tool_list import ToolList
 from model.tool_configuration import ToolConfiguration
+from model.ip_range import IPRange
+from xml.etree import ElementTree
+from xml.etree.ElementTree import Element, tostring
+from gui.xml_handler import XmlDictConfig
+from bson.objectid import ObjectId
 
 
 
@@ -24,18 +29,82 @@ class SEA():
     def get_tool_list(self) -> list:
         return self.__tool_list.tool_list()
 
+    def validate_input(self, input_list: list):
+        for input in input_list:
+            print(input)
+            if (input == "" or input == []):
+                self.__controller.broadcast_error("Missing Tool Configuration Input")
+                return False
+        return True
+
+    def broadcast_error(self, message):
+        self.__controller.broadcast_error(message)
+
     def save_tool(self, tool_name: str, tool_description: str, tool_path: str, tool_option_argument:list,
-                  output_data_spec: list):
+                  output_data_spec: list) -> bool:
         tool = ToolConfiguration()
         tool.set_name(tool_name)
         tool.set_description(tool_description)
         tool.set_path(tool_path)
         tool.set_option_arg(tool_option_argument)
         tool.set_output_data_spec(output_data_spec)
-        record = tool.to_dict()
-        record_id = self.__db.save_data(record, 'TOOL')
+        if self.__tool_list.exists(tool.tool_name(),
+                                   tool.tool_description(),
+                                   tool.tool_path(),
+                                   tool.tool_option_arg(),
+                                   tool.tool_output_data_spec()):
+            self.__controller.broadcast_error("Tool Already Exists")
+            return False
+        tool_dictionary = tool.to_dict()
+        record_id = self.__db.save_data(tool_dictionary, 'TOOL')
         tool.set_tool_record_id(record_id)
         self.__tool_list.add_tool(tool)
+        return True
+
+    def delete_tool(self, tool_name: str):
+        self.__tool_list.remove_tool(tool_name)
+
+    def export_tool(self, path: str, tool_name: str):
+        # Get tool from tool list
+        tool = self.__tool_list.find(tool_name)
+        tool_dictionary = tool.to_dict()
+        # Turns dict into xml format
+        xml = self.dict_to_xml('Tool', tool_dictionary)
+        tool_xml = ElementTree.tostring(xml, encoding='unicode', method='xml')
+        # Saves xml String to the given path
+        with open(path, 'w') as w:
+            w.write(tool_xml)
+
+    def dict_to_xml(self, tag, dictionary):
+        elem = Element(tag)
+        for key, val in dictionary.items():
+            child = Element(key)
+            child.text = str(val)
+            elem.append(child)
+        return elem
+
+    def xml_to_dict(self, xml_file: str) -> dict:
+        '''
+        Takes xml file and converts it into a dictionary
+        :param xml_file: path to xml file
+        :return: converted dictionary
+        '''
+        parser = ElementTree.XMLParser(encoding="utf-8")
+        tree = ElementTree.parse(xml_file, parser=parser)
+        root = tree.getroot()
+        return XmlDictConfig(root)
+
+    def list_to_string(self, list:str) -> str:
+        '''
+        Strips string of special characters [] ''
+        :param list: list that is represented as a string
+        :return:
+        '''
+        list = list.replace("\'", "")
+        list = list.replace(" ", "")
+        sanitized_info = list.strip(' [] ')
+        list_string = sanitized_info.replace(",", "\n")
+        return list_string
 
     def generate_execute_run_request(self, run_record_id: str):
         """

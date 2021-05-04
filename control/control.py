@@ -36,5 +36,7 @@ class Controller():
         self.example_scan_output_3.setObjectName(u"example_scan_output_3")
         self.tab_scan_result_area.addTab(self.example_scan_output_3, "")
 
+
+
     def broadcast_error(self, param):
         self.__gui.display_error(param)
