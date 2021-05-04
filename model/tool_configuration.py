@@ -10,11 +10,16 @@ class ToolConfiguration:
     __tool_name: str
     __tool_description: str
     __tool_path: str
-    __tool_option_arg: []
-    __tool_output_data_spec: []
+    __tool_option_arg: list
+    __tool_output_data_spec: list
 
     def __init__(self):
-        pass
+        self.__tool_record_id = ''
+        self.__tool_name = ''
+        self.__tool_description = ''
+        self.__tool_path = ''
+        self.__tool_option_arg = []
+        self.__tool_output_data_spec = []
 
     def set_tool_record_id(self, record_id):
         self.__tool_record_id = record_id
