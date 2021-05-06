@@ -1,6 +1,7 @@
 from model.whitelisted_ip import WhitelistedIP
 from model.blacklisted_ip import BlacklistedIP
 from model.ip_range import IPRange
+from copy import deepcopy
 
 
 class Target:
@@ -34,3 +35,6 @@ class Target:
     def set_blacklist(self, iprange: IPRange) -> 'Target':
         self.__blacklist = BlacklistedIP(iprange.get_list())
         return self
+
+    def deep_copy(self):
+        return deepcopy(self)

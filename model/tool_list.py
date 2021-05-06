@@ -41,6 +41,16 @@ class ToolList:
                 if i.tool_name() == tool_name:
                     return i
 
+    def find_ids(self, tool_names: list[str]):
+        tool_ids = []
+        if self.is_empty():
+            return []
+        else:
+            for i in self.__tool_list:
+                if i.tool_name() in tool_names:
+                    tool_ids.append(i.tool_record_id())
+        return tool_ids
+
     def add_tool(self, tool):
         '''
         Adds tool object to list of tools

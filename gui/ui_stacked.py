@@ -9,13 +9,13 @@
 ################################################################################
 import sys
 from PyQt5 import Qt
-from PyQt5.QtCore import QCoreApplication, QMetaObject, QRect, Qt
-from PyQt5.QtGui import QFont
+from PyQt5.QtCore import QCoreApplication, QMetaObject, QRect, Qt, QEvent
+from PyQt5.QtGui import QFont, QPalette, QFontMetrics, QStandardItem
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QAction, QWidget, QStackedWidget, QGridLayout, QSplitter, \
     QVBoxLayout, QStatusBar, QMenu, QMenuBar, QSizePolicy, QSpacerItem, QComboBox, QLineEdit, QLabel, QFrame, \
     QPlainTextEdit, QTableWidgetItem, QTableWidget, QTabWidget, QLayout, QMainWindow, QApplication, QInputDialog, \
-    QFileDialog, QMessageBox
+    QFileDialog, QMessageBox, QStyledItemDelegate, qApp
 from xml.etree import ElementTree
 from db.connect import Connect
 from xml.etree.ElementTree import Element, tostring
@@ -24,7 +24,7 @@ from bson.objectid import ObjectId
 import model
 
 
-#import threading
+from queue import Queue
 
 
 
@@ -36,12 +36,14 @@ import model
 class Ui_MainWindow(object):
 
     __came_from_run_list: bool = False
+    q: Queue = None
+
+
 
     def setupUi(self, MainWindow):
 
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        self.db_connection = Connect()
         self.__model = None
         MainWindow.resize(1100, 751)
         self.action_tool = QAction(MainWindow)
@@ -111,6 +113,8 @@ class Ui_MainWindow(object):
         self.table_run_list.setHorizontalHeaderItem(2, __qtablewidgetitem2)
         __qtablewidgetitem3 = QTableWidgetItem()
         self.table_run_list.setHorizontalHeaderItem(3, __qtablewidgetitem3)
+        __qtablewidgetitem4 = QTableWidgetItem()
+        self.table_run_list.setHorizontalHeaderItem(4, __qtablewidgetitem4)
         self.table_run_list.setObjectName(u"table_run_list")
         self.table_run_list.horizontalHeader().setVisible(True)
         self.table_run_list.horizontalHeader().setCascadingSectionResizes(True)
@@ -274,10 +278,10 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_4 = QVBoxLayout()
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.dropdown_scantype = QComboBox(self.layoutWidget5)
+        self.dropdown_scantype = CheckableComboBox()
         self.dropdown_scantype.setObjectName(u"dropdown_scantype")
         self.dropdown_scantype.setFont(font)
-        self.dropdown_scantype.setEditable(True)
+        self.dropdown_scantype.setEditable(False)
 
         self.verticalLayout_4.addWidget(self.dropdown_scantype)
 
@@ -428,6 +432,7 @@ class Ui_MainWindow(object):
         self.tab_scan_result_area = QTabWidget(self.splitter_5)
         self.tab_scan_result_area.setObjectName(u"tab_scan_result_area")
         self.splitter_5.addWidget(self.tab_scan_result_area)
+        #Now to make more tabs based on the amount of scans to run
 
         self.gridLayout_5.addWidget(self.splitter_5, 0, 0, 1, 1)
 
@@ -953,6 +958,7 @@ class Ui_MainWindow(object):
         self.tab_scan_result_area.setCurrentIndex(2)
         self.stacked_tool_content_area.setCurrentIndex(0)
         self.build_Tool_list_table()
+        self.build_scan_type_combobox()
         QMetaObject.connectSlotsByName(MainWindow)
 
     def add_scan_tab(self, tool_name: str):
@@ -1329,6 +1335,14 @@ class Ui_MainWindow(object):
         # TODO add PATH def
         print('save_button_on_click')
 
+    def build_scan_type_combobox(self):
+        if self.__model:
+            current_list = self.__model.get_tool_list()
+            for tool in current_list:
+                self.dropdown_scantype.addItem(tool.tool_name())
+            if self.__model.run_configuration():
+                self.dropdown_scantype.set_checked_data(self.__model.run_config_tool_names())
+
     def build_Tool_list_table(self):
         if self.__model:
             current_list = self.__model.get_tool_list()
@@ -1353,29 +1367,30 @@ class Ui_MainWindow(object):
                 row += 1
 
     def build_run_list_table(self):
-        query = {"_id": 1, "run_name": 1, "run_description": 1}
-        runs = self.db_connection.retrieve_collection('RUN', query)
-        row = 0
-        self.table_run_list.setRowCount(row)
-        for run in runs:
-            print(run)
-            row = self.table_run_list.rowCount()
-            self.table_run_list.setRowHeight(row, 25)
-            self.table_run_list.setRowCount(row + 1)
+        #runs = self.db_connection.retrieve_collection('RUN', query)
+        if self.__model is not None:
+            runs = self.__model.get_all_runs_data_for_run_list()
+            row = 0
+            self.table_run_list.setRowCount(row)
+            for run in runs:
+                print(run)
+                row = self.table_run_list.rowCount()
+                self.table_run_list.setRowHeight(row, 25)
+                self.table_run_list.setRowCount(row + 1)
 
-            item = QTableWidgetItem(run["run_name"])
-            item.setFlags(Qt.ItemIsEnabled)
-            self.table_run_list.setItem(row, 0, item)
+                item = QTableWidgetItem(run["run_name"])
+                item.setFlags(Qt.ItemIsEnabled)
+                self.table_run_list.setItem(row, 0, item)
 
-            item = QTableWidgetItem(run["run_description"])
-            item.setFlags(Qt.ItemIsEnabled)
-            self.table_run_list.setItem(row, 1, item)
+                item = QTableWidgetItem(run["run_description"])
+                item.setFlags(Qt.ItemIsEnabled)
+                self.table_run_list.setItem(row, 1, item)
 
-            # TODO fix hidden _id col
-            item = QTableWidgetItem(str(run["_id"]))
-            item.setFlags(Qt.ItemIsEnabled)
-            self.table_run_list.setItem(row, 4, item)
-            row += 1
+                # TODO fix hidden _id col
+                item = QTableWidgetItem(str(run["_id"]))
+                item.setFlags(Qt.ItemIsEnabled)
+                self.table_run_list.setItem(row, 4, item)
+                row += 1
 
     def value_of_selected_row(self):
 
@@ -1459,12 +1474,18 @@ class Ui_MainWindow(object):
         # TODO add implementation
         print('button_play_run_on_click')
         run_selection = self.table_run_list.currentRow()
-        run_record_id = self.table_run_list.item(run_selection, 5)
-        self.db_connection.retrieve_data(run_record_id, 'RUN')
+        run_record_id = self.table_run_list.item(run_selection, 4).text()
+        #self.db_connection.retrieve_data(run_record_id, 'RUN')
+        self.__model.get_all_runs_data_for_run_list()
+        self.__model.generate_execute_run_request(run_record_id)
+        '''
         try:
             self.__model.generate_execute_run_request(run_record_id)
-        except:
+        except Exception as e:
+            print(e)
+            print(repr(e))
             self.display_error('Play run failed.')
+        '''
 
     def button_stop_run_on_click(self):
         """
@@ -1530,6 +1551,136 @@ class ThisWindow(QMainWindow):
         super(ThisWindow, self).__init__()
         self.ui_main = Ui_MainWindow()
         self.ui_main.setupUi(self)
+
+
+class CheckableComboBox(QComboBox):
+
+    # Subclass Delegate to increase item height
+    # Thanks to https://gis.stackexchange.com/questions/350148/qcombobox-multiple-selection-pyqt5
+    class Delegate(QStyledItemDelegate):
+        def sizeHint(self, option, index):
+            size = super().sizeHint(option, index)
+            size.setHeight(20)
+            return size
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Make the combo editable to set a custom text, but readonly
+        self.setEditable(True)
+        self.lineEdit().setReadOnly(True)
+        # Make the lineedit the same color as QPushButton
+        palette = qApp.palette()
+        palette.setBrush(QPalette.Base, palette.button())
+        self.lineEdit().setPalette(palette)
+
+        # Use custom delegate
+        self.setItemDelegate(CheckableComboBox.Delegate())
+
+        # Update the text when an item is toggled
+        self.model().dataChanged.connect(self.updateText)
+
+        # Hide and show popup when clicking the line edit
+        self.lineEdit().installEventFilter(self)
+        self.closeOnLineEditClick = False
+
+        # Prevent popup from closing when clicking on an item
+        self.view().viewport().installEventFilter(self)
+
+    def resizeEvent(self, event):
+        # Recompute text to elide as needed
+        self.updateText()
+        super().resizeEvent(event)
+
+    def eventFilter(self, object, event):
+
+        if object == self.lineEdit():
+            if event.type() == QEvent.MouseButtonRelease:
+                if self.closeOnLineEditClick:
+                    self.hidePopup()
+                else:
+                    self.showPopup()
+                return True
+            return False
+
+        if object == self.view().viewport():
+            if event.type() == QEvent.MouseButtonRelease:
+                index = self.view().indexAt(event.pos())
+                item = self.model().item(index.row())
+
+                if item.checkState() == Qt.Checked:
+                    item.setCheckState(Qt.Unchecked)
+                else:
+                    item.setCheckState(Qt.Checked)
+                return True
+        return False
+
+    def showPopup(self):
+        super().showPopup()
+        # When the popup is displayed, a click on the lineedit should close it
+        self.closeOnLineEditClick = True
+
+    def hidePopup(self):
+        super().hidePopup()
+        # Used to prevent immediate reopening when clicking on the lineEdit
+        self.startTimer(100)
+        # Refresh the display text when closing
+        self.updateText()
+
+    def timerEvent(self, event):
+        # After timeout, kill timer, and reenable click on line edit
+        self.killTimer(event.timerId())
+        self.closeOnLineEditClick = False
+
+    def updateText(self):
+        texts = []
+        for i in range(self.model().rowCount()):
+            if self.model().item(i).checkState() == Qt.Checked:
+                texts.append(self.model().item(i).text())
+        text = ", ".join(texts)
+
+        # Compute elided text (with "...")
+        #metrics = QFontMetrics(self.lineEdit().font())
+        #elidedText = metrics.elidedText(text, Qt.ElideRight, self.lineEdit().width())
+        #self.lineEdit().setText(elidedText)
+
+    def addItem(self, text, data=None):
+        item = QStandardItem()
+        item.setText(text)
+        if data is None:
+            item.setData(text)
+        else:
+            item.setData(data)
+        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsUserCheckable)
+        item.setData(Qt.Unchecked, Qt.CheckStateRole)
+        self.model().appendRow(item)
+
+    def addItems(self, texts, datalist=None):
+        for i, text in enumerate(texts):
+            try:
+                data = datalist[i]
+            except (TypeError, IndexError):
+                data = None
+            self.addItem(text, data)
+
+    def currentData(self):
+        # Return the list of selected items data
+        res = []
+        for i in range(self.model().rowCount()):
+            if self.model().item(i).checkState() == Qt.Checked:
+                res.append(self.model().item(i).data())
+        return res
+
+    def set_checked_data(self, checked_data: list[str]):
+        for i in range(self.model().rowCount()):
+            if self.model().item(i).currentText() in checked_data:
+                self.model().item(i).setCheckState(Qt.Checked)
+
+    def run(self):
+        """
+        Listens to the Queue and runs concurrently with SEA, Scans, and Controller.
+        :return:
+        """
 
 
 if __name__ == '__main__':

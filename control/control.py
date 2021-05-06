@@ -38,3 +38,6 @@ class Controller():
 
     def broadcast_error(self, param):
         self.__gui.display_error(param)
+
+    def send_detailed_scan_data(self, scan_data: list[dict]):
+        self.__gui.build_detailed_scan_data_table(scan_data)
