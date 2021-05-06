@@ -8,6 +8,7 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, tostring
 from gui.xml_handler import XmlDictConfig
 from bson.objectid import ObjectId
+import threading
 
 
 
@@ -94,17 +95,33 @@ class SEA():
         root = tree.getroot()
         return XmlDictConfig(root)
 
+    def event(self, tool_name: str) -> dict:
+        tool = ToolConfiguration()
+        tool = self.__tool_list.find(tool_name)
+        return tool.to_dict()
+
     def list_to_string(self, list:str) -> str:
         '''
         Strips string of special characters [] ''
         :param list: list that is represented as a string
         :return:
         '''
-        list = list.replace("\'", "")
+        list = str(list).replace("\'", "")
         list = list.replace(" ", "")
         sanitized_info = list.strip(' [] ')
         list_string = sanitized_info.replace(",", "\n")
         return list_string
+
+    def update_tool_db(self):
+        tool_collection = self.__db.retrieve_collection("TOOL")
+        for tool in tool_collection:
+            tool_from_list = self.__tool_list.find_by_id(tool["_id"])
+            if tool_from_list is not None:
+                new_query = tool_from_list.to_dict()
+                self.__db.update_data("TOOL", tool["_id"], new_query)
+            else:
+                self.__db.delete_data("TOOL", tool)
+
 
     def generate_execute_run_request(self, run_record_id: str):
         """

@@ -1,10 +1,12 @@
 from gui.ui_stacked import Ui_MainWindow
+import threading
 
 
 class Controller():
 
 
     __gui: Ui_MainWindow
+    __controller_thread = None
 
     def __init__(self):
         pass
@@ -40,3 +42,11 @@ class Controller():
 
     def broadcast_error(self, param):
         self.__gui.display_error(param)
+
+    def broadcast_message(self):
+        pass
+
+    def start_thread(self):
+        # TODO select target function
+        #self.__controller_thread = threading.Thread(target= #Insert Target Function)
+        self.__controller_thread.start()

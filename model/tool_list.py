@@ -34,12 +34,29 @@ class ToolList:
         :param tool_name: Name of Tool
         :return: Tool
         '''
-        if self.is_empty():
-            return None
-        else:
+        if not self.is_empty():
             for i in self.__tool_list:
                 if i.tool_name() == tool_name:
                     return i
+            # if not found in the list then return None
+            return None
+        # list is empty return None
+        else:
+            return None
+
+    def find_by_id(self, record_id):
+        '''
+        Finds tool object by record id
+        :param record_id: the id number corresponding with the entry in the db
+        :return: tool object if found, else None
+        '''
+        if not self.is_empty():
+            for i in self.__tool_list:
+                if i.tool_record_id() == record_id:
+                    return i
+            return None
+        else:
+            return None
 
     def add_tool(self, tool):
         '''

@@ -14,6 +14,7 @@ class ScanConfiguration:
     __execution_number: int
     __tool_configuration: ToolConfiguration
     __scan_states: list = ['active', 'inactive', 'idle', 'terminate']
+    __scan_thread = None
     process = None
 
     def __init__(self, scan_identification: str = None):
@@ -61,5 +62,5 @@ class ScanConfiguration:
         #self.process.terminate()
 
     def start_thread(self):
-        self.scan_thread = threading.Thread(target=self.execute_())
-        self.scan_thread.start()
+        self.__scan_thread = threading.Thread(target=self.execute_())
+        self.__scan_thread.start()

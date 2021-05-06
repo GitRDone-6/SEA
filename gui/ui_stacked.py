@@ -639,6 +639,7 @@ class Ui_MainWindow(object):
         self.QTable_tool_list.verticalHeader().setStretchLastSection(False)
         self.QTable_tool_list.setSelectionBehavior(QTableWidget.SelectRows)
         self.QTable_tool_list.setSelectionMode(QTableWidget.SingleSelection)
+        self.QTable_tool_list.cellClicked.connect(self.event)
 
         self.verticalLayout_20.addWidget(self.QTable_tool_list)
 
@@ -1207,6 +1208,7 @@ class Ui_MainWindow(object):
 
     def pushbutton_move_down_on_click(self):
         # TODO add implementation
+
         print('pushbutton_move_down_on_click')
 
     def pushbutton_move_up_on_click(self):
@@ -1245,6 +1247,11 @@ class Ui_MainWindow(object):
             path = self.openSaveDialog()
             self.__model.export_tool(path, tool_name)
         print('pushbutton_export_tool_spec_file_on_click')
+
+    def event(self):
+        tool_name = self.value_of_selected_row()
+        tool_dict = self.__model.event(tool_name)
+        self.set_tool_dialog(tool_dict)
 
     def get_tool_dialog(self):
         '''
@@ -1307,6 +1314,8 @@ class Ui_MainWindow(object):
             self.__model.save_tool(input_list[0],input_list[1],input_list[2],input_list[3],input_list[4])
         self.build_Tool_list_table()
         self.clear_text_dialog()
+        x = self.display_message("Overwrite", "Overwrite existing tool?")
+        print(x.text())
         print('save_button_on_click')
 
     def build_Tool_list_table(self):
@@ -1356,6 +1365,45 @@ class Ui_MainWindow(object):
             item.setFlags(Qt.ItemIsEnabled)
             self.table_run_list.setItem(row, 4, item)
             row += 1
+
+    def build_detailed_scan_data_table(self):
+        if self.__model:
+            #get dictionary from model
+            #scan_dictionary_dictionary = self.__model.something()
+            row = 0
+            self.QTable_tool_list.setRowCount(row)
+            for scan_config in scan_config_dictionary:
+                row = self.QTable_tool_list.rowCount()
+                self.QTable_tool_list.setRowHeight(row, 25)
+                self.QTable_tool_list.setRowCount(row + 1)
+                item = QTableWidgetItem(scan_config["name_of_scan"])
+                item.setFlags(Qt.ItemIsEnabled)
+                self.QTable_tool_list.setItem(row, 0, item)
+
+                item = QTableWidgetItem(scan_config["execution_number"])
+                item.setFlags(Qt.ItemIsEnabled)
+                self.QTable_tool_list.setItem(row, 1, item)
+
+                item = QTableWidgetItem(scan_config["start_time"])
+                item.setFlags(Qt.ItemIsEnabled)
+                self.QTable_tool_list.setItem(row, 2, item)
+
+                item = QTableWidgetItem(scan_config["end_time"])
+                item.setFlags(Qt.ItemIsEnabled)
+                self.QTable_tool_list.setItem(row, 3, item)
+
+                item = QTableWidgetItem(scan_config["scanned_ips"])
+                item.setFlags(Qt.ItemIsEnabled)
+                self.QTable_tool_list.setItem(row, 4, item)
+
+                item = QTableWidgetItem(scan_config["success_failure"])
+                item.setFlags(Qt.ItemIsEnabled)
+                self.QTable_tool_list.setItem(row, 5, item)
+
+                item = QTableWidgetItem(scan_config["control_status"])
+                item.setFlags(Qt.ItemIsEnabled)
+                self.QTable_tool_list.setItem(row, 6, item)
+                row += 1
 
     def value_of_selected_row(self):
         row = self.QTable_tool_list.currentRow()
@@ -1505,6 +1553,16 @@ class Ui_MainWindow(object):
         self.ip_exclusivity_m_box.setText(param)
         self.ip_exclusivity_m_box.exec_()
 
+    def display_message(self, title, text):
+        message = QMessageBox()
+        message.setWindowTitle(title)
+        message.setText(text)
+        message.setIcon(QMessageBox.Warning)
+        message.setStandardButtons(QMessageBox.Cancel|
+                                   QMessageBox.Save)
+        message.setDefaultButton(QMessageBox.Cancel)
+        message.exec()
+        return message.buttonClicked.connect()
 
 class ThisWindow(QMainWindow):
 

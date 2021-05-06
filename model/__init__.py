@@ -20,7 +20,7 @@ def main():
     model.set_controller(control)
 
     view.ui_main.build_Tool_list_table()
-    view.ui_main.build_scan_type_combobox()
+    #view.ui_main.build_scan_type_combobox()
 
     view.show()
     sys.exit(app.exec())

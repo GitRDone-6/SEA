@@ -7,7 +7,6 @@ class Connect:
     """
     
     def __init__(self):
-        # Global variable
         # Connect to default mongo localhost: 27017
         self.client = pymongo.MongoClient()
         self.db = 'SEA'
@@ -38,8 +37,30 @@ class Connect:
         return record
 
     def retrieve_collection(self, collection, query = {}):
+        '''
+        Retrieves entire collection
+        :param collection: name of collection to be retrieved
+        :param query: Optional param, if passed acts as a filter to retrieve collection with specific data
+        :return: list of dictionaries
+        '''
         return self.current_db[collection].find() if query == {} \
             else self.current_db[collection].find({}, query)
 
     def delete_data(self, collection, query):
+        '''
+        Removes specific record
+        :param collection: name of collection
+        :param query: record/dictionary to be removed
+        '''
         self.current_db[collection].remove(query)
+
+    def update_data(self, collection, record_id, new_query):
+        '''
+        Updates specific record
+        :param collection: name of collection to access
+        :param record_id: record id
+        :param new_query: new record/dictionary
+        '''
+        record_id = {'_id': ObjectId(record_id)}
+        new_query = {"$set": new_query}
+        self.current_db[collection].update_one(record_id, new_query)
