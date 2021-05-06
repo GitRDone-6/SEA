@@ -89,20 +89,18 @@ class ToolList:
             new_tool = ToolConfiguration()
             self.add_tool(new_tool.to_tool(tool))
 
-    def to_list(self, string):
+    def exists(self, tool_name: str, tool_description: str, tool_path: str, tool_option_argument:list,
+                  output_data_spec: list):
         '''
-        Takes list string and sanitizes string
-        :param list:
+        Checks if target tool already exists within the tool list
+        :param target:
         :return:
         '''
-        print(type(string))
-        for i in string:
-            print(i)
-        '''
-        string = string.replace("\'", "")
-        string = string.replace(" ", "")
-        string = string.strip(' [] ')
-        new_list = string.split(",")
-        print(new_list)
-        '''
-        return string
+        for tool in self.__tool_list:
+            if (tool.tool_name() == tool_name or
+                (tool.tool_description() == tool_description and
+                tool.tool_path() == tool_path and
+                tool.tool_option_arg() == tool_option_argument and
+                tool.tool_output_data_spec() == output_data_spec)):
+                return True
+        return False
