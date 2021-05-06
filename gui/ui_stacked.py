@@ -1311,11 +1311,9 @@ class Ui_MainWindow(object):
     def save_button_on_click(self):
         input_list = self.get_tool_dialog()
         if (self.__model.validate_input(input_list)):
-            self.__model.save_tool(input_list[0],input_list[1],input_list[2],input_list[3],input_list[4])
+            reply = self.__model.save_tool(input_list[0],input_list[1],input_list[2],input_list[3],input_list[4])
         self.build_Tool_list_table()
         self.clear_text_dialog()
-        x = self.display_message("Overwrite", "Overwrite existing tool?")
-        print(x.text())
         print('save_button_on_click')
 
     def build_Tool_list_table(self):
@@ -1561,8 +1559,9 @@ class Ui_MainWindow(object):
         message.setStandardButtons(QMessageBox.Cancel|
                                    QMessageBox.Save)
         message.setDefaultButton(QMessageBox.Cancel)
-        message.exec()
-        return message.buttonClicked.connect()
+        reply = message.exec_()
+        return reply
+
 
 class ThisWindow(QMainWindow):
 

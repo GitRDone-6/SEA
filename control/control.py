@@ -43,8 +43,8 @@ class Controller():
     def broadcast_error(self, param):
         self.__gui.display_error(param)
 
-    def broadcast_message(self):
-        pass
+    def broadcast_message(self, title, text):
+        return self.__gui.display_message(title, text)
 
     def start_thread(self):
         # TODO select target function
