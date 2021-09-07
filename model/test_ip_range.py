@@ -1,16 +1,16 @@
 import unittest
-from model import ip_range
+from model.ip_range import IPRange
 
 
 class TestIPRange(unittest.TestCase):
-    ip: ip_range.IPRange
+    ip: IPRange
     HIGHEST_IP: str = '255.255.255.255'
     LOWEST_IP: str = '0.0.0.0'
     LOWER_IP: str = '127.0.0.1'
     UPPER_IP: str = '128.0.0.1'
 
     def setUp(self) -> None:
-        self.ip = ip_range.IPRange(TestIPRange.LOWER_IP, TestIPRange.UPPER_IP)
+        self.ip = IPRange(TestIPRange.LOWER_IP, TestIPRange.UPPER_IP)
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -220,14 +220,14 @@ class TestIPRange(unittest.TestCase):
         '''
         TC1: Check if not mutually exclusive if they are the same list
         '''
-        other_ip_range = ip_range.IPRange(TestIPRange.LOWER_IP, TestIPRange.UPPER_IP)
+        other_ip_range = IPRange(TestIPRange.LOWER_IP, TestIPRange.UPPER_IP)
         exclusive, index = self.ip.is_mutually_exclusive(other_ip_range)
         self.assertFalse(exclusive)
         self.assertEqual(0, index)
 
         '''
         TC2: Check if mutually exclusive'''
-        other_ip_range = ip_range.IPRange('129.0.0.0', '130.0.0.0')
+        other_ip_range = IPRange('129.0.0.0', '130.0.0.0')
         exclusive, index = self.ip.is_mutually_exclusive(other_ip_range)
         self.assertTrue(exclusive)
         self.assertIsNone(index)
@@ -324,7 +324,7 @@ class TestIPRange(unittest.TestCase):
         :return:
         """
 
-        other_ip_range = ip_range.IPRange(TestIPRange.LOWER_IP, TestIPRange.UPPER_IP)
+        other_ip_range = IPRange(TestIPRange.LOWER_IP, TestIPRange.UPPER_IP)
 
         '''
         TC1: If this_ip_range is empty, should return false'''
@@ -357,12 +357,12 @@ class TestIPRange(unittest.TestCase):
         '''
         TC1: If the IP Range list is empty, just return false.'''
         self.ip.clear_list()
-        self.assertFalse(self.ip.eliminate_ip(TestIPRange.LOWER_IP))
+        self.assertFalse(self.ip.eliminate_ip(self.LOWER_IP))
 
         '''
         TC2: If the IP Range contains a range of IP's and is given an IP in the middle of the range, The list size will
         grow by 1. Operation will be True.'''
-        self.ip.insert_range(TestIPRange.LOWER_IP, TestIPRange.UPPER_IP)
+        self.ip.insert_range(self.LOWER_IP, self.UPPER_IP)
         older_version_list = self.ip.get_list()
         eliminated = self.ip.eliminate_ip('127.1.0.0')
         changed_version_list = self.ip.get_list()

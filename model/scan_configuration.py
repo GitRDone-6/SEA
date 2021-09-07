@@ -99,7 +99,7 @@ class ScanConfiguration:
         # STUB
         run_arg.append('45.33.32.156') # THIS IS scanme.nmap.org
         self.__start_time = datetime.datetime.now().strftime('%m/%d/%y %H:%M:%S')
-        self.process = subprocess.run(run_arg, stdout=subprocess.PIPE)
+        self.process = subprocess.run(run_arg)
 
     def terminate_(self):
         """

@@ -22,8 +22,8 @@ class IPRange:
             self._list.sort()
         else:
             self._check_valid_range(lower, upper)
-            self.insert_range(lower, upper)
-
+            # self.insert_range(lower, upper)
+            self._list.append((lower, upper))
 
     @staticmethod
     def _check_valid_range(lower: str, upper: str) -> None:
@@ -67,7 +67,7 @@ class IPRange:
             Case    3) The range given is partially inclusive of 1 IP Tuple
             Given   3) ("126.0.0.1", 127.0.0.99")
             Answer  3) Extend the tuple to the outlying bound.
-            Return  3) [("126.0.0.1", "128.0.0.1"), ("129.0.0.1"), ("201.0.0.1", 204.0.0.1")]    
+            Return  3) [("126.0.0.1", "128.0.0.1"), ("129.0.0.1"), ("201.0.0.1", "204.0.0.1")]    
         We also need to check if a tuple goes over any other tuple.
         '''
 
@@ -500,7 +500,87 @@ class IPRange:
         :return: Whether or not the given IP was found and eliminated. False if not found or not eliminated
         :rtype: bool
         """
+
+        '''
+        Iterate through each range in the list. Check if the ip given is inside of the range. '''
+        for i in range(len(self._list)):
+            '''
+            Check if the item is just a string and not a tuple.'''
+            if type(self._list[i]) is str:
+                '''
+                Check it is the IP we are given'''
+                if self._list[i] is ip:
+                    '''
+                    Delete the item, return true'''
+                    del self._list[i]
+                    return True
+            '''
+            Check if the item is the tuple kind'''
+            if type(self._list[i]) is tuple:
+                '''
+                Check if the item contains the IP given'''
+                lower: str = self._list[i][0]
+                upper: str = self._list[i][0]
+                if lower <= ip <= upper:
+                    '''
+                    Two cases can happen. The IP can be one of the bounds or in the middle. 
+                    1. If the IP is one of the bounds then we can simply alter the bound and return. 
+                    2. If the IP is in the middle of the bounds, then we must split the range into two and return.'''
+                    if lower is ip:
+                        self._list[i][0] = self._increment_ip(lower)
+                    if upper is ip:
+                        self._list[i][1] = self._decrement_ip(upper)
         return False
+
+    def _decrement_ip(self, upper: str) -> str:
+        """
+        This method is for taking a given ip and decrementing the numeric value down and returning its string.
+        :param self:
+        :param upper:
+        :return:
+        """
+        split_ip: [int] = [int(octet) for octet in upper.split('.')]
+        if split_ip[3] == 0:
+            split_ip[3] = 255
+            if split_ip[2] == 0:
+                split_ip[2] = 255
+                if split_ip[1] == 0:
+                    split_ip[1] = 255
+                    if split_ip[0] == 0:
+                        split_ip[0] = 255
+                    else:
+                        split_ip[0] -= 1
+                else:
+                    split_ip[1] -= 1
+            else:
+                split_ip[2] -= 1
+        else:
+            split_ip[3] -= 1
+        str_ip = [str(octet) for octet in split_ip]
+        return '.'.join(str_ip)
+
+    def _increment_ip(self, lower: str) -> str:
+        """
+        This method is for taking a given ip and incrementing the numberic value up and returning its string
+        :param self:
+        :param lower:
+        :return:
+        """
+        split_ip: [int] = [int(octet) for octet in lower.split('.')]
+        if split_ip[3] == 255:
+            split_ip[3] = 0
+            if split_ip[2] == 255:
+                split_ip[2] = 0
+                if split_ip[1] == 255:
+                    split_ip[1] = 0
+                    if split_ip[0] == 255:
+                        split_ip[0] = 0
+                    else: split_ip[0] += 1
+                else: split_ip[1] += 1
+            else: split_ip[2] += 1
+        else: split_ip[3] += 1
+        str_ip = [str(octet) for octet in split_ip]
+        return '.'.join(str_ip)
 
     def to_dict(self) -> dict:
         """
